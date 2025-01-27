@@ -98,8 +98,8 @@ main() {
   start_group "Download code coverage results from target branch"
   LAST_SUCCESSFUL_RUN_ID=$(gh run list --status=success --branch="$TARGET_BRANCH" --workflow="$GITHUB_BASELINE_WORKFLOW" --event=push --json=databaseId --limit=1 -q '.[] | .databaseId')
   if [ -z "$LAST_SUCCESSFUL_RUN_ID" ]; then
-    echo "::error::No successful run found on the target branch"
-    exit 1
+    echo "No successful run found on the target branch"
+    exit 0
   fi
 
   download_coverage "$LAST_SUCCESSFUL_RUN_ID" "$COVERAGE_ARTIFACT_NAME" "$COVERAGE_FILE_NAME" "$OLD_COVERAGE_PATH"
