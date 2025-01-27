@@ -31,6 +31,9 @@ runs:
     - name: Download go-coverage-report
       shell: bash
       run: $GITHUB_ACTION_PATH/scripts/install.sh
+      env:
+        RUNNER_OS: ${{ runner.os }}
+        RUNNER_ARCH: ${{ runner.arch }}
 
     - name: Determine changed files
       id: changed-files
