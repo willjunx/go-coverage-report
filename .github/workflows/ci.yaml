@@ -60,3 +60,4 @@ jobs:
       - uses: ./
         with:
           version: local
+          trim: "github.com/willjunx/go-coverage-report/"
