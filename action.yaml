@@ -47,7 +47,7 @@ runs:
     - name: Code coverage report
       shell: bash
       id: coverage
-      run: $GITHUB_ACTION_PATH/scripts/github-action.sh
+      run: $GITHUB_ACTION_PATH/scripts/run.sh
       env:
         GITHUB_REPOSITORY: ${{ github.repository }}
         GITHUB_TOKEN: ${{ github.token }}
