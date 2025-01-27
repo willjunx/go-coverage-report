@@ -59,7 +59,7 @@ end_group(){
 
 if [[ $VERSION == "local" ]]; then
   start_group "Installing go-coverage-report from local source"
-  go install -v ./src
+  go install -v ./cmd
   end_group
   exit 0
 fi
