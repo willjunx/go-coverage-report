@@ -1,4 +1,4 @@
-package report
+package coverage
 
 import "strings"
 

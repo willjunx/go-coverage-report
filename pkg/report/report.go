@@ -236,10 +236,10 @@ func emojiScore(newPercent, oldPercent float64) (emoji, diffStr string) {
 
 func (r *Report) TrimPrefix(prefix string) {
 	for i, name := range r.ChangedPackages {
-		r.ChangedPackages[i] = TrimPrefix(name, prefix)
+		r.ChangedPackages[i] = coverage.TrimPrefix(name, prefix)
 	}
 	for i, name := range r.ChangedFiles {
-		r.ChangedFiles[i] = TrimPrefix(name, prefix)
+		r.ChangedFiles[i] = coverage.TrimPrefix(name, prefix)
 	}
 
 	r.Old.TrimPrefix(prefix)

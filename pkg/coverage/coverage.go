@@ -2,7 +2,6 @@ package coverage
 
 import (
 	"fmt"
-	"github.com/willjunx/go-coverage-report/pkg/report"
 	"path"
 )
 
@@ -73,7 +72,7 @@ func (c *Coverage) ByPackage() map[string]*Coverage {
 func (c *Coverage) TrimPrefix(prefix string) {
 	for name, cov := range c.Files {
 		delete(c.Files, cov.FileName)
-		cov.FileName = report.trimPrefix(name, prefix)
+		cov.FileName = TrimPrefix(name, prefix)
 		c.Files[cov.FileName] = cov
 	}
 }
