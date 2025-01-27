@@ -1,8 +1,10 @@
-package src
+package main
 
 import (
 	"flag"
 	"fmt"
+	"github.com/willjunx/go-coverage-report/pkg/coverage"
+	"github.com/willjunx/go-coverage-report/pkg/report"
 	"log"
 	"os"
 	"path/filepath"
@@ -80,17 +82,17 @@ func programArgs() (oldCov, newCov, changedFile string, opts options) {
 }
 
 func run(oldCovPath, newCovPath, changedFilesPath string, opts options) error {
-	oldCov, err := NewCoverageFromFile(oldCovPath)
+	oldCov, err := coverage.NewCoverageFromFile(oldCovPath)
 	if err != nil {
 		return fmt.Errorf("failed to parse old coverage: %w", err)
 	}
 
-	newCov, err := NewCoverageFromFile(newCovPath)
+	newCov, err := coverage.NewCoverageFromFile(newCovPath)
 	if err != nil {
 		return fmt.Errorf("failed to parse new coverage: %w", err)
 	}
 
-	changedFiles, err := ParseChangedFiles(changedFilesPath, opts.root)
+	changedFiles, err := report.ParseChangedFiles(changedFilesPath, opts.root)
 	if err != nil {
 		return fmt.Errorf("failed to load changed files: %w", err)
 	}
@@ -100,7 +102,7 @@ func run(oldCovPath, newCovPath, changedFilesPath string, opts options) error {
 		return nil
 	}
 
-	report := NewReport(oldCov, newCov, changedFiles)
+	report := report.New(oldCov, newCov, changedFiles)
 	if opts.trim != "" {
 		report.TrimPrefix(opts.trim)
 	}

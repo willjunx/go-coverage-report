@@ -1,4 +1,4 @@
-package src
+package report
 
 import (
 	"encoding/json"

@@ -1,6 +1,8 @@
-package src
+package report
 
-type blocksByStart []ProfileBlock
+import "github.com/willjunx/go-coverage-report/pkg/coverage"
+
+type blocksByStart []coverage.ProfileBlock
 
 func (b blocksByStart) Len() int      { return len(b) }
 func (b blocksByStart) Swap(i, j int) { b[i], b[j] = b[j], b[i] }
@@ -9,7 +11,7 @@ func (b blocksByStart) Less(i, j int) bool {
 	return bi.StartLine < bj.StartLine || bi.StartLine == bj.StartLine && bi.StartCol < bj.StartCol
 }
 
-type byFileName []Profile
+type byFileName []coverage.Profile
 
 func (p byFileName) Len() int           { return len(p) }
 func (p byFileName) Less(i, j int) bool { return p[i].FileName < p[j].FileName }

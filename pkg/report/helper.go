@@ -1,8 +1,8 @@
-package src
+package report
 
 import "strings"
 
-func trimPrefix(name, prefix string) string {
+func TrimPrefix(name, prefix string) string {
 	trimmed := strings.TrimPrefix(name, prefix)
 	trimmed = strings.TrimPrefix(trimmed, "/")
 

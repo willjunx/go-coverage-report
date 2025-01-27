@@ -1,7 +1,8 @@
-package src
+package coverage
 
 import (
 	"fmt"
+	"github.com/willjunx/go-coverage-report/pkg/report"
 	"path"
 )
 
@@ -12,7 +13,7 @@ type Coverage struct {
 	MissedStmt  int
 }
 
-func New(profiles []Profile) *Coverage {
+func NewCoverage(profiles []Profile) *Coverage {
 	cov := Coverage{Files: map[string]Profile{}}
 	for _, p := range profiles {
 		cov.add(p)
@@ -27,7 +28,7 @@ func NewCoverageFromFile(filename string) (*Coverage, error) {
 		return nil, err
 	}
 
-	return New(pp), nil
+	return NewCoverage(pp), nil
 }
 
 func (c *Coverage) add(p Profile) {
@@ -63,7 +64,7 @@ func (c *Coverage) ByPackage() map[string]*Coverage {
 			profiles = append(profiles, c.Files[file])
 		}
 
-		pkgCovs[pkg] = New(profiles)
+		pkgCovs[pkg] = NewCoverage(profiles)
 	}
 
 	return pkgCovs
@@ -72,7 +73,7 @@ func (c *Coverage) ByPackage() map[string]*Coverage {
 func (c *Coverage) TrimPrefix(prefix string) {
 	for name, cov := range c.Files {
 		delete(c.Files, cov.FileName)
-		cov.FileName = trimPrefix(name, prefix)
+		cov.FileName = report.trimPrefix(name, prefix)
 		c.Files[cov.FileName] = cov
 	}
 }

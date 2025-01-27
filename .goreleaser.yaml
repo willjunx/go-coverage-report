@@ -20,7 +20,7 @@ builds:
       - linux
       - windows
       - darwin
-    main: ./src
+    main: ./cmd
 
 archives:
   - formats: ["tar.gz"]

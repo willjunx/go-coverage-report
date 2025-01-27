@@ -1,24 +1,25 @@
-package src_test
+package report_test
 
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/willjunx/go-coverage-report/src"
+	"github.com/willjunx/go-coverage-report/pkg/coverage"
+	"github.com/willjunx/go-coverage-report/pkg/report"
 )
 
 var _ = Describe("Report", func() {
 	Context("Markdown", func() {
 		It("Should return correctly", func() {
-			oldCov, err := src.NewCoverageFromFile("testdata/01-old-coverage.txt")
+			oldCov, err := coverage.NewCoverageFromFile("testdata/01-old-coverage.txt")
 			Expect(err).ToNot(HaveOccurred())
 
-			newCov, err := src.NewCoverageFromFile("testdata/01-new-coverage.txt")
+			newCov, err := coverage.NewCoverageFromFile("testdata/01-new-coverage.txt")
 			Expect(err).ToNot(HaveOccurred())
 
-			changedFiles, err := src.ParseChangedFiles("testdata/01-changed-files.json", "github.com/fgrosse/prioqueue")
+			changedFiles, err := report.ParseChangedFiles("testdata/01-changed-files.json", "github.com/fgrosse/prioqueue")
 			Expect(err).ToNot(HaveOccurred())
 
-			report := src.NewReport(oldCov, newCov, changedFiles)
+			report := report.New(oldCov, newCov, changedFiles)
 			actual := report.Markdown()
 
 			expected := `### Merging this branch will **decrease** overall coverage
@@ -47,16 +48,16 @@ var _ = Describe("Report", func() {
 
 		When("Only Changed Unit Tests", func() {
 			It("Should return correctly", func() {
-				oldCov, err := src.NewCoverageFromFile("testdata/02-old-coverage.txt")
+				oldCov, err := coverage.NewCoverageFromFile("testdata/02-old-coverage.txt")
 				Expect(err).ToNot(HaveOccurred())
 
-				newCov, err := src.NewCoverageFromFile("testdata/02-new-coverage.txt")
+				newCov, err := coverage.NewCoverageFromFile("testdata/02-new-coverage.txt")
 				Expect(err).ToNot(HaveOccurred())
 
-				changedFiles, err := src.ParseChangedFiles("testdata/02-changed-files.json", "github.com/fgrosse/prioqueue")
+				changedFiles, err := report.ParseChangedFiles("testdata/02-changed-files.json", "github.com/fgrosse/prioqueue")
 				Expect(err).ToNot(HaveOccurred())
 
-				report := src.NewReport(oldCov, newCov, changedFiles)
+				report := report.New(oldCov, newCov, changedFiles)
 				actual := report.Markdown()
 
 				expected := `### Merging this branch will **increase** overall coverage

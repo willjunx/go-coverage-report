@@ -1,9 +1,10 @@
-package src
+package coverage
 
 import (
 	"bufio"
 	"errors"
 	"fmt"
+	"github.com/willjunx/go-coverage-report/pkg/report"
 	"io"
 	"os"
 	"sort"
@@ -111,7 +112,7 @@ func ParseProfilesFromReader(rd io.Reader) ([]Profile, error) {
 	profiles := make([]Profile, 0, len(files))
 
 	for _, p := range files {
-		sort.Sort(blocksByStart(p.Blocks))
+		sort.Sort(report.blocksByStart(p.Blocks))
 
 		n := len(p.Blocks)
 		newBlocks := make([]ProfileBlock, 0)
@@ -160,7 +161,7 @@ func ParseProfilesFromReader(rd io.Reader) ([]Profile, error) {
 		profiles = append(profiles, p)
 	}
 
-	sort.Sort(byFileName(profiles))
+	sort.Sort(report.byFileName(profiles))
 
 	return profiles, nil
 }
