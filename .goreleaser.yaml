@@ -20,7 +20,7 @@ builds:
       - linux
       - windows
       - darwin
-    main: ./cmd
+    main: ./cmd/go-coverage-report
 
 archives:
   - formats: ["tar.gz"]
