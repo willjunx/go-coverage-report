@@ -46,6 +46,7 @@ jobs:
     runs-on: "ubuntu-latest"
     needs: "tests"
     permissions:
+      contents: read
       # Grant permission to add comments to the PR.
       pull-requests: write
     steps:
