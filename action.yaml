@@ -1,13 +1,13 @@
 name: "Go Code Coverage Report Generator"
-description: "Post Go code coverage reports to pull requests."
+description: "Post Go Code Coverage Reports to Pull Requests."
 author: "William Juanda"
 branding:
-  icon: 'umbrella'
-  color: 'blue'
+  icon: "anchor"
+  color: "green"
 
 inputs:
   version:
-    description: 'The exact version tag to use.'
+    description: "The exact version tag to use."
     required: true
     default: "v1.2.0"
 
