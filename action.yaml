@@ -50,7 +50,7 @@ runs:
   steps:
     - name: Download go-coverage-report
       shell: bash
-      run: $GITHUB_ACTION_PATH/scripts/install.sh
+      run: $GITHUB_ACTION_PATH/scripts/install.sh "${{ inputs.version }}" "${{ inputs.sha256sum }}"
       env:
         RUNNER_OS: ${{ runner.os }}
         RUNNER_ARCH: ${{ runner.arch }}
