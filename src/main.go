@@ -111,11 +111,11 @@ func run(oldCovPath, newCovPath, changedFilesPath string, opts options) error {
 		if err != nil {
 			panic(err)
 		}
-	//case "json":
-	//	_, err = fmt.Fprintln(os.Stdout, report.JSON())
-	//	if err != nil {
-	//		panic(err)
-	//	}
+	case "json":
+		_, err = fmt.Fprintln(os.Stdout, report.JSON())
+		if err != nil {
+			panic(err)
+		}
 	default:
 		return fmt.Errorf("unsupported format: %q", opts.format)
 	}
