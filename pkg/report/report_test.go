@@ -16,7 +16,7 @@ var _ = Describe("Report", func() {
 			newCov, err := coverage.NewCoverageFromFile("testdata/01-new-coverage.txt")
 			Expect(err).ToNot(HaveOccurred())
 
-			changedFiles, err := report.ParseChangedFiles("testdata/01-changed-files.json", "github.com/fgrosse/prioqueue")
+			changedFiles, err := report.ParseChangedFiles("testdata/01-changed-files.json", "github.com/username/prioqueue")
 			Expect(err).ToNot(HaveOccurred())
 
 			report := report.New(oldCov, newCov, changedFiles)
@@ -26,8 +26,8 @@ var _ = Describe("Report", func() {
 
 | Impacted Packages | Coverage Δ | :robot: |
 |-------------------|------------|---------|
-| github.com/fgrosse/prioqueue | 90.20% (**-9.80%**) | :thumbsdown: |
-| github.com/fgrosse/prioqueue/foo/bar | 0.00% (ø) |  |
+| github.com/username/prioqueue | 90.20% (**-9.80%**) | :thumbsdown: |
+| github.com/username/prioqueue/foo/bar | 0.00% (ø) |  |
 
 ---
 
@@ -39,8 +39,8 @@ var _ = Describe("Report", func() {
 
 | Changed File | Coverage Δ | Total | Covered | Missed | :robot: |
 |--------------|------------|-------|---------|--------|---------|
-| github.com/fgrosse/prioqueue/foo/bar/baz.go | 0.00% (ø) | 0 | 0 | 0 |  |
-| github.com/fgrosse/prioqueue/min_heap.go | 80.77% (**-19.23%**) | 52 (+2) | 42 (-8) | 10 (+10) | :skull:  |
+| github.com/username/prioqueue/foo/bar/baz.go | 0.00% (ø) | 0 | 0 | 0 |  |
+| github.com/username/prioqueue/min_heap.go | 80.77% (**-19.23%**) | 52 (+2) | 42 (-8) | 10 (+10) | :skull:  |
 </details>`
 
 			Expect(actual).To(Equal(expected))
@@ -54,7 +54,7 @@ var _ = Describe("Report", func() {
 				newCov, err := coverage.NewCoverageFromFile("testdata/02-new-coverage.txt")
 				Expect(err).ToNot(HaveOccurred())
 
-				changedFiles, err := report.ParseChangedFiles("testdata/02-changed-files.json", "github.com/fgrosse/prioqueue")
+				changedFiles, err := report.ParseChangedFiles("testdata/02-changed-files.json", "github.com/username/prioqueue")
 				Expect(err).ToNot(HaveOccurred())
 
 				report := report.New(oldCov, newCov, changedFiles)
@@ -64,7 +64,7 @@ var _ = Describe("Report", func() {
 
 | Impacted Packages | Coverage Δ | :robot: |
 |-------------------|------------|---------|
-| github.com/fgrosse/prioqueue | 99.02% (**+8.82%**) | :thumbsup: |
+| github.com/username/prioqueue | 99.02% (**+8.82%**) | :thumbsup: |
 
 ---
 
@@ -74,7 +74,7 @@ var _ = Describe("Report", func() {
 
 ### Changed unit test files
 
-- github.com/fgrosse/prioqueue/min_heap_test.go
+- github.com/username/prioqueue/min_heap_test.go
 
 </details>`
 

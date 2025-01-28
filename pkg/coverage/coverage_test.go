@@ -3,6 +3,7 @@ package coverage_test
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
 	"github.com/willjunx/go-coverage-report/pkg/coverage"
 )
 
@@ -27,7 +28,7 @@ var _ = Describe("Coverage", func() {
 				pkgs := cov.ByPackage()
 				Expect(pkgs).To(HaveLen(1))
 
-				pkgCov := pkgs["github.com/fgrosse/prioqueue"]
+				pkgCov := pkgs["github.com/username/prioqueue"]
 				Expect(pkgCov).ToNot(BeNil())
 				Expect(pkgCov.TotalStmt).To(Equal(102))
 				Expect(pkgCov.CoveredStmt).To(Equal(92))

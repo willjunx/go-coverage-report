@@ -21,7 +21,7 @@ var usage = strings.TrimSpace(fmt.Sprintf(`
 	You can use the -root flag to add a prefix to all paths in the list of changed
 	files. This is useful to map the changed files (e.g., ["foo/my_file.go"] to their
 	coverage profile which uses the full package name to identify the files
-	(e.g., "github.com/fgrosse/example/foo/my_file.go"). Note that currently,
+	(e.g., "github.com/username/example/foo/my_file.go"). Note that currently,
 	packages with a different name than their directory are not supported.
 	
 	ARGUMENTS:
