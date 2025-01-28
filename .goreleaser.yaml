@@ -20,7 +20,7 @@ builds:
       - linux
       - windows
       - darwin
-    main: ./src/main.go
+    main: ./cmd/go-coverage-report
 
 archives:
   - formats: ["tar.gz"]
@@ -36,6 +36,9 @@ archives:
     format_overrides:
       - goos: windows
         formats: ["zip"]
+
+checksum:
+  name_template: "checksums.txt"
 
 changelog:
   sort: asc

@@ -1,8 +1,9 @@
-package src
+package report
 
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/willjunx/go-coverage-report/pkg/coverage"
 	"math"
 	"path/filepath"
 	"sort"
@@ -10,12 +11,12 @@ import (
 )
 
 type Report struct {
-	Old, New        *Coverage
+	Old, New        *coverage.Coverage
 	ChangedFiles    []string
 	ChangedPackages []string
 }
 
-func NewReport(oldCov, newCov *Coverage, changedFiles []string) *Report {
+func New(oldCov, newCov *coverage.Coverage, changedFiles []string) *Report {
 	sort.Strings(changedFiles)
 
 	return &Report{
@@ -235,10 +236,10 @@ func emojiScore(newPercent, oldPercent float64) (emoji, diffStr string) {
 
 func (r *Report) TrimPrefix(prefix string) {
 	for i, name := range r.ChangedPackages {
-		r.ChangedPackages[i] = trimPrefix(name, prefix)
+		r.ChangedPackages[i] = coverage.TrimPrefix(name, prefix)
 	}
 	for i, name := range r.ChangedFiles {
-		r.ChangedFiles[i] = trimPrefix(name, prefix)
+		r.ChangedFiles[i] = coverage.TrimPrefix(name, prefix)
 	}
 
 	r.Old.TrimPrefix(prefix)

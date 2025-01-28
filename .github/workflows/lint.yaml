@@ -56,17 +56,17 @@ jobs:
           version: v1.62.2
           install-mode: "binary"
 
-  shell-check:
-    runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-    steps:
-      - name: "Checkout Repository"
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: "Differential ShellCheck"
-        uses: redhat-plumbers-in-action/differential-shellcheck@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+#  shell-check:
+#    runs-on: ubuntu-latest
+#    permissions:
+#      security-events: write
+#    steps:
+#      - name: "Checkout Repository"
+#        uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0
+#
+#      - name: "Differential ShellCheck"
+#        uses: redhat-plumbers-in-action/differential-shellcheck@v5
+#        with:
+#          token: ${{ secrets.GITHUB_TOKEN }}

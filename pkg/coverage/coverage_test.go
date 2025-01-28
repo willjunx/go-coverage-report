@@ -1,16 +1,16 @@
-package src_test
+package coverage_test
 
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/willjunx/go-coverage-report/src"
+	"github.com/willjunx/go-coverage-report/pkg/coverage"
 )
 
 var _ = Describe("Coverage", func() {
 
 	Context("NewCoverageFromFile", func() {
 		It("Should return correctly", func() {
-			cov, err := src.NewCoverageFromFile("testdata/01-new-coverage.txt")
+			cov, err := coverage.NewCoverageFromFile("testdata/01-new-coverage.txt")
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(cov.TotalStmt).To(Equal(102))
@@ -21,7 +21,7 @@ var _ = Describe("Coverage", func() {
 
 		When("Filter by Package", func() {
 			It("Should return correctly", func() {
-				cov, err := src.NewCoverageFromFile("testdata/01-new-coverage.txt")
+				cov, err := coverage.NewCoverageFromFile("testdata/01-new-coverage.txt")
 				Expect(err).NotTo(HaveOccurred())
 
 				pkgs := cov.ByPackage()

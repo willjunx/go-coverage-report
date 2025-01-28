@@ -9,17 +9,11 @@ inputs:
   version:
     description: "The exact version tag to use."
     required: true
-    default: "v1.2.0"
-
-  coverage-artifact-name:
-    description: 'The name of the artifact containing the code coverage results.'
-    required: true
-    default: "code-coverage"
 
   coverage-file-name:
     description: 'The name of the file containing the code coverage results.'
     required: true
-    default: "coverage.txt"
+    default: "coverage.out"
 
   root-package:
     description: |
@@ -30,6 +24,60 @@ inputs:
     required: false
     default: "github.com/${{ github.repository }}"
 
+  skip-comment:
+    description: |
+      Skip creating or updating the pull request comment. This may be useful when you want
+      to generate the coverage report and modify it in your own scripts.
+    required: false
+    default: 'false'
+
+  trim:
+    description: Remove the prefix from the 'Impacted Packages' column in the markdown report.
+    required: false
+
+  github-baseline-workflow-ref:
+    description: |
+      The reference to the GitHub Actions Workflow that generates the baseline coverage. 
+      By default, the ref of the GitHub Actions Workflow is used 
+      (e.g., 'octocat/hello-world/.github/workflows/my-workflow.yml@refs/heads/my_branch'). 
+      Alternatively, you can simply provide the name of the Workflow file directly (e.g., 'my-workflow.yml').
+    default: ${{ github.workflow_ref }}
+    required: false
+
 runs:
-  - name: Download go-coverage-report
-    id: download
+  using: "composite"
+
+  steps:
+    - name: Download go-coverage-report
+      shell: bash
+      run: $GITHUB_ACTION_PATH/scripts/install.sh "${{ inputs.version }}" "${{ inputs.sha256sum }}"
+      env:
+        RUNNER_OS: ${{ runner.os }}
+        RUNNER_ARCH: ${{ runner.arch }}
+
+    - name: Determine changed files
+      id: changed-files
+      uses: tj-actions/changed-files@aa08304bd477b800d468db44fe10f6c61f7f7b11 # v42.1.0
+      with:
+        write_output_files: true
+        json: true
+        files: |
+          **.go
+
+    - name: Code coverage report
+      shell: bash
+      id: coverage
+      run: $GITHUB_ACTION_PATH/scripts/run.sh
+      env:
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        GITHUB_RUN_ID: ${{ github.run_id }}
+        GITHUB_BASELINE_WORKFLOW_REF: ${{ inputs.github-baseline-workflow-ref }}
+        TARGET_BRANCH: ${{ github.base_ref }}
+        CHANGED_FILES_PATH: .github/outputs/all_modified_files.json
+        COVERAGE_ARTIFACT_NAME: ${{ inputs.coverage-artifact-name }}
+        COVERAGE_FILE_NAME: ${{ inputs.coverage-file-name }}
+        ROOT_PACKAGE: ${{ inputs.root-package }}
+        SKIP_COMMENT: ${{ inputs.skip-comment }}
+        TRIM_PACKAGE: ${{ inputs.trim }}
