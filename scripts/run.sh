@@ -122,6 +122,8 @@ main() {
     exit 0
   fi
 
+  COVERAGE_COMMENT_PATH="$COMMENT_TAG\n$COVERAGE_COMMENT_PATH"
+
   # Output the coverage report as a multiline GitHub output parameter
   echo "Writing GitHub output parameter to \"$GITHUB_OUTPUT\""
   {
