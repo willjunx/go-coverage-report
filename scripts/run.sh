@@ -116,7 +116,7 @@ main() {
       "$CHANGED_FILES_PATH")
   end_group
 
-  if [ ! -s "$REPORT" ]; then
+  if [ -z "$REPORT" ]; then
     echo "::notice::No coverage report to output"
     exit 0
   fi
