@@ -65,7 +65,12 @@ is_artifact_exists() {
   local run_id="$1"
   local artifact_name="$2"
 
-  gh run view "$run_id" --json artifacts | jq -e ".artifacts[] | select(.name==\"$artifact_name\")" > /dev/null
+  # Check if the artifact exists
+  if gh run view "$run_id" --json artifacts | jq -e ".artifacts[] | select(.name==\"$artifact_name\")" > /dev/null; then
+    return 0  # Artifact exists
+  else
+    return 1  # Artifact does not exist
+  fi
 }
 
 download_coverage() {
