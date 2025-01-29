@@ -11,6 +11,7 @@ setup_env_variables()  {
   COVERAGE_ARTIFACT_NAME=${COVERAGE_ARTIFACT_NAME:-code-coverage}
   COVERAGE_FILE_NAME=${COVERAGE_FILE_NAME:-coverage.txt}
   SKIP_COMMENT=${SKIP_COMMENT:-false}
+  COMMENT_TAG=${COMMENT_TAG:-<-- Go Coverage Report -->}
 
   OLD_COVERAGE_PATH=.github/outputs/old-coverage.txt
   NEW_COVERAGE_PATH=.github/outputs/new-coverage.txt
@@ -82,8 +83,10 @@ download_coverage() {
 post_comment() {
   local pr_number="$1"
   local body="$2"
+  local tag="$3"
 
-  COMMENT_ID=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${GITHUB_PULL_REQUEST_NUMBER}/comments" -q '.[] | select(.user.login=="github-actions[bot]" and (.body | test("Coverage Δ")) ) | .id' | head -n 1)
+  COMMENT_ID=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${GITHUB_PULL_REQUEST_NUMBER}/comments" -q '.[] | select(.user.login=="github-actions[bot]" and (.body | test("'"$tag"'")) ) | .id' | head -n 1)
+
   if [ -z "$COMMENT_ID" ]; then
     echo "Creating new coverage report comment"
   else
@@ -126,7 +129,9 @@ main() {
     > $COVERAGE_COMMENT_PATH
   end_group
 
-  if [ ! -s $COVERAGE_COMMENT_PATH ]; then
+  COVERAGE_COMMENT_PATH="$COMMENT_TAG\n$COVERAGE_COMMENT_PATH"
+
+  if [ ! -s "$COVERAGE_COMMENT_PATH" ]; then
     echo "::notice::No coverage report to output"
     exit 0
   fi
@@ -145,7 +150,7 @@ main() {
   fi
 
   start_group "Comment on pull request"
-  post_comment "$GITHUB_PULL_REQUEST_NUMBER" "$COVERAGE_COMMENT_PATH"
+  post_comment "$GITHUB_PULL_REQUEST_NUMBER" "$COVERAGE_COMMENT_PATH" "$COMMENT_TAG"
   end_group
 }
 
