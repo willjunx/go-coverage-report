@@ -37,6 +37,13 @@ inputs:
     required: false
     default: 'false'
 
+  comment-tag:
+    description: |
+      Add tag to the comment as an identifier. This tag is used to search the comment and
+      update the comment.
+    required: false
+    default: "<-- Go Coverage Report -->"
+
   trim:
     description: Remove the prefix from the 'Impacted Packages' column in the markdown report.
     required: false
@@ -86,4 +93,5 @@ runs:
         COVERAGE_FILE_NAME: ${{ inputs.coverage-file-name }}
         ROOT_PACKAGE: ${{ inputs.root-package }}
         SKIP_COMMENT: ${{ inputs.skip-comment }}
+        COMMENT_TAG: ${{ inputs.comment-tag }}
         TRIM_PACKAGE: ${{ inputs.trim }}

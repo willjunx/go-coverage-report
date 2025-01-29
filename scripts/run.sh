@@ -11,6 +11,7 @@ setup_env_variables()  {
   COVERAGE_ARTIFACT_NAME=${COVERAGE_ARTIFACT_NAME:-code-coverage}
   COVERAGE_FILE_NAME=${COVERAGE_FILE_NAME:-coverage.txt}
   SKIP_COMMENT=${SKIP_COMMENT:-false}
+  COMMENT_TAG=${COMMENT_TAG:-<-- Go Coverage Report -->}
 
   OLD_COVERAGE_PATH=.github/outputs/old-coverage.txt
   NEW_COVERAGE_PATH=.github/outputs/new-coverage.txt
@@ -75,8 +76,10 @@ download_coverage() {
 post_comment() {
   local pr_number="$1"
   local body="$2"
+  local tag="$3"
 
-  COMMENT_ID=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${GITHUB_PULL_REQUEST_NUMBER}/comments" -q '.[] | select(.user.login=="github-actions[bot]" and (.body | test("Coverage Δ")) ) | .id' | head -n 1)
+  COMMENT_ID=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${GITHUB_PULL_REQUEST_NUMBER}/comments" -q '.[] | select(.user.login=="github-actions[bot]" and (.body | test("'"$tag"'")) ) | .id' | head -n 1)
+
   if [ -z "$COMMENT_ID" ]; then
     echo "Creating new coverage report comment"
   else
@@ -90,34 +93,35 @@ post_comment() {
 main() {
   setup_env_variables
 
-  start_group "Download code coverage results from current run"
-  download_coverage "$GITHUB_RUN_ID" "$COVERAGE_ARTIFACT_NAME" "$COVERAGE_FILE_NAME" "$NEW_COVERAGE_PATH"
-  end_group
-
-  start_group "Download code coverage results from target branch"
   LAST_SUCCESSFUL_RUN_ID=$(gh run list --status=success --branch="$TARGET_BRANCH" --workflow="$GITHUB_BASELINE_WORKFLOW" --event=push --json=databaseId --limit=1 -q '.[] | .databaseId')
   if [ -z "$LAST_SUCCESSFUL_RUN_ID" ]; then
     echo "No successful run found on the target branch"
     exit 0
   fi
 
+  start_group "Download code coverage results from current run"
+  download_coverage "$GITHUB_RUN_ID" "$COVERAGE_ARTIFACT_NAME" "$COVERAGE_FILE_NAME" "$NEW_COVERAGE_PATH"
+  end_group
+
+  start_group "Download code coverage results from target branch"
   download_coverage "$LAST_SUCCESSFUL_RUN_ID" "$COVERAGE_ARTIFACT_NAME" "$COVERAGE_FILE_NAME" "$OLD_COVERAGE_PATH"
   end_group
 
   start_group "Compare code coverage results"
-  go-coverage-report \
+  REPORT=$(go-coverage-report \
       -root="$ROOT_PACKAGE" \
       -trim="$TRIM_PACKAGE" \
       "$OLD_COVERAGE_PATH" \
       "$NEW_COVERAGE_PATH" \
-      "$CHANGED_FILES_PATH" \
-    > $COVERAGE_COMMENT_PATH
+      "$CHANGED_FILES_PATH")
   end_group
 
-  if [ ! -s $COVERAGE_COMMENT_PATH ]; then
+  if [ -z "$REPORT" ]; then
     echo "::notice::No coverage report to output"
     exit 0
   fi
+
+  printf "%s\n%s\n" "$COMMENT_TAG" "$REPORT" > $COVERAGE_COMMENT_PATH
 
   # Output the coverage report as a multiline GitHub output parameter
   echo "Writing GitHub output parameter to \"$GITHUB_OUTPUT\""
@@ -133,7 +137,7 @@ main() {
   fi
 
   start_group "Comment on pull request"
-  post_comment "$GITHUB_PULL_REQUEST_NUMBER" "$COVERAGE_COMMENT_PATH"
+  post_comment "$GITHUB_PULL_REQUEST_NUMBER" "$COVERAGE_COMMENT_PATH" "$COMMENT_TAG"
   end_group
 }
 
