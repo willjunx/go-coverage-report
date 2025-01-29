@@ -108,21 +108,20 @@ main() {
   end_group
 
   start_group "Compare code coverage results"
-  go-coverage-report \
+  REPORT=$(go-coverage-report \
       -root="$ROOT_PACKAGE" \
       -trim="$TRIM_PACKAGE" \
       "$OLD_COVERAGE_PATH" \
       "$NEW_COVERAGE_PATH" \
-      "$CHANGED_FILES_PATH" \
-    > $COVERAGE_COMMENT_PATH
+      "$CHANGED_FILES_PATH")
   end_group
 
-  if [ ! -s "$COVERAGE_COMMENT_PATH" ]; then
+  if [ ! -s "$REPORT" ]; then
     echo "::notice::No coverage report to output"
     exit 0
   fi
 
-  COVERAGE_COMMENT_PATH="$COMMENT_TAG\n$COVERAGE_COMMENT_PATH"
+  printf "%s\n%s\n" "$COMMENT_TAG" "$REPORT" > $COVERAGE_COMMENT_PATH
 
   # Output the coverage report as a multiline GitHub output parameter
   echo "Writing GitHub output parameter to \"$GITHUB_OUTPUT\""
