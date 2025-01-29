@@ -9,6 +9,7 @@ inputs:
   version:
     description: "The exact version tag to use."
     required: true
+    default: "v1.0.0-alpha.1"
 
   coverage-file-name:
     description: 'The name of the file containing the code coverage results.'
