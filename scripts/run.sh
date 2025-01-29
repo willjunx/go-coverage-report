@@ -61,14 +61,6 @@ end_group() {
     { set +x; return; } 2>/dev/null
 }
 
-is_artifact_exists() {
-    local run_id="$1"
-    local artifact_name="$2"
-
-    gh run view "$run_id" --json artifacts | jq -e ".artifacts[] | select(.name==\"$artifact_name\")" > /dev/null
-    return $?
-}
-
 download_coverage() {
   local run_id="$1"
   local artifact_name="$2"
@@ -104,11 +96,6 @@ main() {
   LAST_SUCCESSFUL_RUN_ID=$(gh run list --status=success --branch="$TARGET_BRANCH" --workflow="$GITHUB_BASELINE_WORKFLOW" --event=push --json=databaseId --limit=1 -q '.[] | .databaseId')
   if [ -z "$LAST_SUCCESSFUL_RUN_ID" ]; then
     echo "No successful run found on the target branch"
-    exit 0
-  fi
-
-  if ! is_artifact_exists "$LAST_SUCCESSFUL_RUN_ID" "$COVERAGE_ARTIFACT_NAME"; then
-    echo "Artifact '$COVERAGE_ARTIFACT_NAME' not found for run ID $LAST_SUCCESSFUL_RUN_ID"
     exit 0
   fi
 
