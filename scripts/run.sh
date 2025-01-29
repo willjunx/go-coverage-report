@@ -117,8 +117,6 @@ main() {
     > $COVERAGE_COMMENT_PATH
   end_group
 
-  COVERAGE_COMMENT_PATH="$COMMENT_TAG\n$COVERAGE_COMMENT_PATH"
-
   if [ ! -s "$COVERAGE_COMMENT_PATH" ]; then
     echo "::notice::No coverage report to output"
     exit 0
