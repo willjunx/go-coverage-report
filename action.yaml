@@ -11,6 +11,11 @@ inputs:
     required: true
     default: "v1.0.0-alpha.3"
 
+  coverage-artifact-name:
+    description: 'The name of the artifact containing the code coverage results.'
+    required: true
+    default: "code-coverage"
+
   coverage-file-name:
     description: 'The name of the file containing the code coverage results.'
     required: true
