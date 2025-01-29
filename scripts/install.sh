@@ -88,7 +88,7 @@ end_group
 start_group "Downloading tar archive from GitHub"
 mkdir -p .github/outputs
 OS=$(echo "$RUNNER_OS" | tr '[:upper:]' '[:lower:]')
-FILENAME="go-coverage-report-${OS}-${ARCH}.tar.gz"
+FILENAME="go-coverage-report_${OS}_${ARCH}.tar.gz"
 URL="https://github.com/willjunx/go-coverage-report/releases/download/${VERSION}/${FILENAME}"
 curl --fail --location "$URL" --output ".github/outputs/$FILENAME"
 end_group
