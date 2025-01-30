@@ -11,7 +11,7 @@ setup_env_variables()  {
   COVERAGE_ARTIFACT_NAME=${COVERAGE_ARTIFACT_NAME:-code-coverage}
   COVERAGE_FILE_NAME=${COVERAGE_FILE_NAME:-coverage.txt}
   SKIP_COMMENT=${SKIP_COMMENT:-false}
-  COMMENT_TAG=${COMMENT_TAG:-<-- Go Coverage Report -->}
+  COMMENT_TAG="<-- ${COMMENT_TAG:-Go Coverage Report} -->"
 
   OLD_COVERAGE_PATH=.github/outputs/old-coverage.txt
   NEW_COVERAGE_PATH=.github/outputs/new-coverage.txt

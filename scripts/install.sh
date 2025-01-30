@@ -12,7 +12,7 @@ This script is meant to be used as part of a GitHub action and makes use of Work
 described in https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
 
 Usage:
-    $0 version [sha256sum]
+    $0 version
 
 Example:
     $0 Linux X64
@@ -36,10 +36,6 @@ RUNNER_ARCH=${RUNNER_ARCH:-X64}
 if [[ -z ${VERSION} ]]; then
     echo "Missing version argument"
     exit 1
-fi
-
-if [[ $# == 2 ]]; then
-  SHA256SUM=$2
 fi
 
 sudo_or_dry_run="sudo"
@@ -93,21 +89,12 @@ URL="https://github.com/willjunx/go-coverage-report/releases/download/${VERSION}
 curl --fail --location "$URL" --output ".github/outputs/$FILENAME"
 end_group
 
-if ! [[ "$SHA256SUM" ]] ; then
-  start_group "Checking checksum using checksums.txt file from GitHub release"
-  URL="https://github.com/willjunx/go-coverage-report/releases/download/${VERSION}/checksums.txt"
-  cd .github/outputs
-  curl -fsSL "$URL" | sha256sum --check --ignore-missing
-  cd -
-  end_group
-else
-  start_group "Checking checksum using provided SHA256 hash"
-  echo "Actual sha256:"
-  sha256sum ".github/outputs/$FILENAME"
-  echo "Checking checksum"
-  echo "$SHA256SUM  .github/outputs/$FILENAME" | sha256sum -c
-  end_group
-fi
+start_group "Checking checksum using checksums.txt file from GitHub release"
+URL="https://github.com/willjunx/go-coverage-report/releases/download/${VERSION}/checksums.txt"
+cd .github/outputs
+curl -fsSL "$URL" | sha256sum --check --ignore-missing
+cd -
+end_group
 
 start_group "Decompressing tar archive"
 tar -xzf ".github/outputs/$FILENAME" -C .github/outputs/ go-coverage-report

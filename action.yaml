@@ -9,7 +9,7 @@ inputs:
   version:
     description: "The exact version tag to use."
     required: true
-    default: "v1.0.0-alpha.3"
+    default: "v1.0.0-alpha.5"
 
   coverage-artifact-name:
     description: 'The name of the artifact containing the code coverage results.'
@@ -42,7 +42,7 @@ inputs:
       Add tag to the comment as an identifier. This tag is used to search the comment and
       update the comment.
     required: false
-    default: "<-- Go Coverage Report -->"
+    default: "Go Coverage Report"
 
   trim:
     description: Remove the prefix from the 'Impacted Packages' column in the markdown report.
@@ -63,7 +63,7 @@ runs:
   steps:
     - name: Download go-coverage-report
       shell: bash
-      run: $GITHUB_ACTION_PATH/scripts/install.sh "${{ inputs.version }}" "${{ inputs.sha256sum }}"
+      run: $GITHUB_ACTION_PATH/scripts/install.sh "${{ inputs.version }}"
       env:
         RUNNER_OS: ${{ runner.os }}
         RUNNER_ARCH: ${{ runner.arch }}

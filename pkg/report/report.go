@@ -114,16 +114,20 @@ func (r *Report) Title() string {
 		}
 	}
 
+	title := fmt.Sprintf("## Coverage Percentage %.2f%%\n", r.New.Percent())
+
 	switch {
 	case numIncrease == 0 && numDecrease == 0:
-		return fmt.Sprintln("### Merging this branch will **not change** overall coverage")
+		title += fmt.Sprintln("### Merging this branch will **not change** overall coverage")
 	case numIncrease > 0 && numDecrease == 0:
-		return fmt.Sprintln("### Merging this branch will **increase** overall coverage")
+		title += fmt.Sprintln("### Merging this branch will **increase** overall coverage")
 	case numIncrease == 0 && numDecrease > 0:
-		return fmt.Sprintln("### Merging this branch will **decrease** overall coverage")
+		title += fmt.Sprintln("### Merging this branch will **decrease** overall coverage")
 	default:
-		return fmt.Sprintf("### Merging this branch changes the coverage (%d decrease, %d increase)\n", numDecrease, numIncrease)
+		title += fmt.Sprintf("### Merging this branch changes the coverage (%d decrease, %d increase)\n", numDecrease, numIncrease)
 	}
+
+	return title
 }
 
 func (r *Report) addDetails(report *strings.Builder) {
