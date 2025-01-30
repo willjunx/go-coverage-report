@@ -23,7 +23,8 @@ var _ = Describe("Report", func() {
 			report := report.New(oldCov, newCov, changedFiles)
 			actual := report.Markdown()
 
-			expected := `### Merging this branch will **decrease** overall coverage
+			expected := `## Coverage Percentage 90.20%
+### Merging this branch will **decrease** overall coverage
 
 | Impacted Packages | Coverage Δ | :robot: |
 |-------------------|------------|---------|
@@ -62,7 +63,8 @@ var _ = Describe("Report", func() {
 				report := report.New(oldCov, newCov, changedFiles)
 				actual := report.Markdown()
 
-				expected := `### Merging this branch will **increase** overall coverage
+				expected := `## Coverage Percentage 99.02%
+### Merging this branch will **increase** overall coverage
 
 | Impacted Packages | Coverage Δ | :robot: |
 |-------------------|------------|---------|
