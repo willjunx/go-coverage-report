@@ -61,7 +61,22 @@ end_group() {
     { set +x; return; } 2>/dev/null
 }
 
-download_coverage() {
+check_coverage_artifact() {
+  local run_id="$1"
+  local artifact_name="$2"
+
+  # Get artifacts for the given workflow run
+  ARTIFACTS=$(gh api repos/"$GITHUB_REPOSITORY"/actions/runs/"$run_id"/artifacts --jq '.artifacts[].name')
+
+  # Check if the artifact exists
+  if echo "$ARTIFACTS" | grep -q "^$artifact_name$"; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+download_coverage_artifact() {
   local run_id="$1"
   local artifact_name="$2"
   local file_name="$3"
@@ -99,12 +114,17 @@ main() {
     exit 0
   fi
 
+  if ! check_coverage_artifact "$LAST_SUCCESSFUL_RUN_ID" "$COVERAGE_ARTIFACT_NAME"; then
+    echo "No Artifact $COVERAGE_ARTIFACT_NAME found on the target branch"
+    exit 0
+  fi
+
   start_group "Download code coverage results from current run"
-  download_coverage "$GITHUB_RUN_ID" "$COVERAGE_ARTIFACT_NAME" "$COVERAGE_FILE_NAME" "$NEW_COVERAGE_PATH"
+  download_coverage_artifact "$GITHUB_RUN_ID" "$COVERAGE_ARTIFACT_NAME" "$COVERAGE_FILE_NAME" "$NEW_COVERAGE_PATH"
   end_group
 
   start_group "Download code coverage results from target branch"
-  download_coverage "$LAST_SUCCESSFUL_RUN_ID" "$COVERAGE_ARTIFACT_NAME" "$COVERAGE_FILE_NAME" "$OLD_COVERAGE_PATH"
+  download_coverage_artifact "$LAST_SUCCESSFUL_RUN_ID" "$COVERAGE_ARTIFACT_NAME" "$COVERAGE_FILE_NAME" "$OLD_COVERAGE_PATH"
   end_group
 
   start_group "Compare code coverage results"
