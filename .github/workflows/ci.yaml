@@ -67,3 +67,4 @@ jobs:
         with:
           version: local
           trim: "github.com/willjunx/go-coverage-report/"
+          comment-tag: "internal/my"
