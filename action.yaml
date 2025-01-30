@@ -42,7 +42,7 @@ inputs:
       Add tag to the comment as an identifier. This tag is used to search the comment and
       update the comment.
     required: false
-    default: "<-- Go Coverage Report -->"
+    default: "Go Coverage Report"
 
   trim:
     description: Remove the prefix from the 'Impacted Packages' column in the markdown report.
