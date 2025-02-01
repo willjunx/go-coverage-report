@@ -3,11 +3,12 @@ package report
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/willjunx/go-coverage-report/pkg/coverage"
 	"math"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/willjunx/go-coverage-report/pkg/coverage"
 )
 
 type Report struct {
@@ -29,7 +30,7 @@ func New(oldCov, newCov *coverage.Coverage, changedFiles []string) *Report {
 
 func changedPackages(changedFiles []string) []string {
 	var (
-		res     []string
+		res     = make([]string, 0)
 		visited = make(map[string]bool)
 	)
 
@@ -57,6 +58,7 @@ func (r *Report) Markdown() string {
 
 	oldCovPkgs := r.Old.ByPackage()
 	newCovPkgs := r.New.ByPackage()
+
 	for _, pkg := range r.ChangedPackages {
 		var oldPercent, newPercent float64
 
@@ -140,6 +142,7 @@ func (r *Report) addDetails(report *strings.Builder) {
 	_, _ = fmt.Fprintln(report)
 
 	var codeFiles, unitTestFiles []string
+
 	for _, f := range r.ChangedFiles {
 		if strings.HasSuffix(f, "_test.go") {
 			unitTestFiles = append(unitTestFiles, f)
@@ -171,6 +174,7 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 
 		valueWithDelta := func(oldVal, newVal int) string {
 			diff := oldVal - newVal
+
 			switch {
 			case diff < 0:
 				return fmt.Sprintf("%d (+%d)", newVal, -diff)
@@ -210,6 +214,7 @@ func roundFloat(val float64, precision int) float64 {
 	}
 
 	pow := math.Pow10(precision)
+
 	return math.Round(pow*val) / pow
 }
 
@@ -242,6 +247,7 @@ func (r *Report) TrimPrefix(prefix string) {
 	for i, name := range r.ChangedPackages {
 		r.ChangedPackages[i] = coverage.TrimPrefix(name, prefix)
 	}
+
 	for i, name := range r.ChangedFiles {
 		r.ChangedFiles[i] = coverage.TrimPrefix(name, prefix)
 	}
