@@ -21,6 +21,15 @@ func GetChangedFiles(oldCov, newCov *coverage.Coverage) []string {
 		isChange := newProfile.CoveragePercent() != oldProfile.CoveragePercent() ||
 			len(newProfile.Blocks) != len(oldProfile.Blocks)
 
+		if !isChange {
+			for i, block := range newProfile.Blocks {
+				if !block.Equal(oldProfile.Blocks[i]) {
+					isChange = true
+					break
+				}
+			}
+		}
+
 		if isNew || isChange {
 			res = append(res, newFile)
 		}
