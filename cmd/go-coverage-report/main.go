@@ -65,7 +65,7 @@ func programArgs() (oldCov, newCov string, opts options) {
 	flag.Parse()
 
 	args := flag.Args()
-	if len(args) != 2 {
+	if len(args) != 3 {
 		if len(args) > 0 {
 			log.Printf("ERROR: Expected exactly 3 arguments but got %d\n\n", len(args))
 		}
