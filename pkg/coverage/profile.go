@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -33,12 +34,14 @@ type ProfileBlock struct {
 // NewProfilesFromFile parses profile data in the specified file and returns a
 // Profile for each source file described therein.
 func NewProfilesFromFile(fileName string) ([]Profile, error) {
-	pf, err := os.Open(fileName)
+	pf, err := os.Open(filepath.Clean(fileName))
 	if err != nil {
 		return nil, err
 	}
 
-	defer pf.Close()
+	defer func() {
+		_ = pf.Close()
+	}()
 
 	return ParseProfilesFromReader(pf)
 }
@@ -65,7 +68,7 @@ func (p Profile) GetMissed() int {
 
 // ParseProfilesFromReader parses profile data from the Reader and
 // returns a Profile for each source file described therein.
-func ParseProfilesFromReader(rd io.Reader) ([]Profile, error) {
+func ParseProfilesFromReader(rd io.Reader) ([]Profile, error) { //nolint:funlen,gocognit // expected
 	var (
 		mode  string
 		files = make(map[string]Profile)
@@ -213,7 +216,7 @@ func parseLine(l string) (fileName string, block ProfileBlock, err error) {
 // seekBack searches backwards from end to find sep in l, then returns the
 // value between sep and end as an integer.
 // If seekBack fails, the returned error will reference `what`.
-func seekBack(l string, sep byte, end int, what string) (value int, nextSep int, err error) {
+func seekBack(l string, sep byte, end int, what string) (value, nextSep int, err error) {
 	for cur := end - 1; cur >= 0; cur-- {
 		if l[cur] == sep {
 			i, err := strconv.Atoi(l[cur+1 : end])

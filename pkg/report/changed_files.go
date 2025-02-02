@@ -7,13 +7,14 @@ import (
 )
 
 func ParseChangedFiles(filename, prefix string) ([]string, error) {
-	data, err := os.ReadFile(filename)
+	data, err := os.ReadFile(filepath.Clean(filename))
 	if err != nil {
 		return nil, err
 	}
 
 	var files []string
 	err = json.Unmarshal(data, &files)
+
 	if err != nil {
 		return nil, err
 	}

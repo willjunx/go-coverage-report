@@ -3,12 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/willjunx/go-coverage-report/pkg/coverage"
-	"github.com/willjunx/go-coverage-report/pkg/report"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/willjunx/go-coverage-report/pkg/coverage"
+	pkgReport "github.com/willjunx/go-coverage-report/pkg/report"
 )
 
 var usage = strings.TrimSpace(fmt.Sprintf(`
@@ -68,6 +69,7 @@ func programArgs() (oldCov, newCov, changedFile string, opts options) {
 		if len(args) > 0 {
 			log.Printf("ERROR: Expected exactly 3 arguments but got %d\n\n", len(args))
 		}
+
 		flag.Usage()
 		os.Exit(1)
 	}
@@ -92,7 +94,7 @@ func run(oldCovPath, newCovPath, changedFilesPath string, opts options) error {
 		return fmt.Errorf("failed to parse new coverage: %w", err)
 	}
 
-	changedFiles, err := report.ParseChangedFiles(changedFilesPath, opts.root)
+	changedFiles, err := pkgReport.ParseChangedFiles(changedFilesPath, opts.root)
 	if err != nil {
 		return fmt.Errorf("failed to load changed files: %w", err)
 	}
@@ -102,7 +104,7 @@ func run(oldCovPath, newCovPath, changedFilesPath string, opts options) error {
 		return nil
 	}
 
-	report := report.New(oldCov, newCov, changedFiles)
+	report := pkgReport.New(oldCov, newCov, changedFiles)
 	if opts.trim != "" {
 		report.TrimPrefix(opts.trim)
 	}
