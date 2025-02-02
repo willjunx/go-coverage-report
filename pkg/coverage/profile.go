@@ -31,6 +31,14 @@ type ProfileBlock struct {
 	ExecCount           int
 }
 
+func (p ProfileBlock) Equal(b ProfileBlock) bool {
+	return p.StartLine == b.StartLine &&
+		p.StartCol == b.StartCol &&
+		p.EndLine == b.EndLine &&
+		p.EndCol == b.EndCol &&
+		p.NumStmt == b.NumStmt
+}
+
 // NewProfilesFromFile parses profile data in the specified file and returns a
 // Profile for each source file described therein.
 func NewProfilesFromFile(fileName string) ([]Profile, error) {

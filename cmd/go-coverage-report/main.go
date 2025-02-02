@@ -61,7 +61,7 @@ func main() {
 	}
 }
 
-func programArgs() (oldCov, newCov, changedFile string, opts options) {
+func programArgs() (oldCov, newCov string, opts options) {
 	flag.Parse()
 
 	args := flag.Args()
@@ -80,10 +80,10 @@ func programArgs() (oldCov, newCov, changedFile string, opts options) {
 		format: flag.Lookup("format").Value.String(),
 	}
 
-	return args[0], args[1], args[2], opts
+	return args[0], args[1], opts
 }
 
-func run(oldCovPath, newCovPath, changedFilesPath string, opts options) error {
+func run(oldCovPath, newCovPath string, opts options) error {
 	oldCov, err := coverage.NewCoverageFromFile(oldCovPath)
 	if err != nil {
 		return fmt.Errorf("failed to parse old coverage: %w", err)
@@ -94,10 +94,7 @@ func run(oldCovPath, newCovPath, changedFilesPath string, opts options) error {
 		return fmt.Errorf("failed to parse new coverage: %w", err)
 	}
 
-	changedFiles, err := pkgReport.ParseChangedFiles(changedFilesPath, opts.root)
-	if err != nil {
-		return fmt.Errorf("failed to load changed files: %w", err)
-	}
+	changedFiles := pkgReport.GetChangedFiles(oldCov, newCov)
 
 	if len(changedFiles) == 0 {
 		log.Println("Skipping report since there are no changed files")

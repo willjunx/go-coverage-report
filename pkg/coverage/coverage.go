@@ -50,7 +50,7 @@ func (c *Coverage) Percent() float64 {
 }
 
 func (c *Coverage) ByPackage() map[string]*Coverage {
-	packages := map[string][]string{} // maps package paths to files
+	packages := make(map[string][]string)
 
 	for file := range c.Files {
 		pkg := path.Dir(file)
