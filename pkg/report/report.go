@@ -137,7 +137,7 @@ func (r *Report) Markdown() string {
 
 	oldCovPkgs := r.Old.ByPackage()
 	newCovPkgs := r.New.ByPackage()
-
+	fmt.Println("HALOHA", r.PackageCoveragePass.Detail)
 	for _, pkg := range r.ChangedPackages {
 		var oldPercent, newPercent float64
 
