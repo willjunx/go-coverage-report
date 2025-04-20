@@ -105,6 +105,18 @@ post_comment() {
   gh pr comment "$pr_number" --body-file="$body"
 }
 
+check_coverage_result() {
+  local source="$1"
+  local fail_marker="$2"
+
+  if grep -Fxq "$fail_marker" "$source"; then
+    echo "❌ Coverage check failed. Exiting with error."
+    exit 1
+  else
+    echo "✅ Coverage check passed."
+  fi
+}
+
 main() {
   setup_env_variables
 
@@ -160,10 +172,7 @@ main() {
   post_comment "$GITHUB_PULL_REQUEST_NUMBER" "$COVERAGE_COMMENT_PATH" "$COMMENT_TAG"
   end_group
 
-  if grep -Fxq "### Coverage Result: :negative_squared_cross_mark: FAIL" "$COVERAGE_COMMENT_PATH"; then
-    echo "❌ Coverage check failed. Exiting with error."
-    exit 1
-  fi
+  check_coverage_result "### Coverage Result: :negative_squared_cross_mark: FAIL" $COVERAGE_COMMENT_PATH
 }
 
 main
