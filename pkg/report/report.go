@@ -124,13 +124,18 @@ func (r *Report) Markdown() string {
 
 	_, _ = fmt.Fprintln(report, r.Title())
 
+	var (
+		header    = "| Impacted Packages | Coverage Δ | :robot: |"
+		separator = "|-------------------|------------|---------|"
+	)
+
 	if hasCheckCoverage {
-		_, _ = fmt.Fprintln(report, "| Impacted Packages | Coverage Δ | :robot: | Pass |")
-		_, _ = fmt.Fprintln(report, "|-------------------|------------|---------|------|")
-	} else {
-		_, _ = fmt.Fprintln(report, "| Impacted Packages | Coverage Δ | :robot: |")
-		_, _ = fmt.Fprintln(report, "|-------------------|------------|---------|")
+		header += " Pass |"
+		separator += "------|"
 	}
+
+	_, _ = fmt.Fprintln(report, header)
+	_, _ = fmt.Fprintln(report, separator)
 
 	oldCovPkgs := r.Old.ByPackage()
 	newCovPkgs := r.New.ByPackage()
@@ -148,15 +153,15 @@ func (r *Report) Markdown() string {
 
 		emoji, diffStr := emojiScore(newPercent, oldPercent)
 
+		format := "| %s | %.2f%% (%s) | %s |"
+		args := []interface{}{pkg, newPercent, diffStr, emoji}
+
 		if hasCheckCoverage {
-			_, _ = fmt.Fprintf(report, "| %s | %.2f%% (%s) | %s | %s |\n",
-				pkg, newPercent, diffStr, emoji, emojiPass(r.PackageCoveragePass.Detail[pkg]),
-			)
-		} else {
-			_, _ = fmt.Fprintf(report, "| %s | %.2f%% (%s) | %s |\n",
-				pkg, newPercent, diffStr, emoji,
-			)
+			format += " %s |"
+			args = append(args, emojiPass(r.PackageCoveragePass.Detail[pkg]))
 		}
+
+		_, _ = fmt.Fprintf(report, format+"\n", args...)
 	}
 
 	report.WriteString("\n")
@@ -272,13 +277,18 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 	_, _ = fmt.Fprintln(report, "### Changed files (no unit tests)")
 	_, _ = fmt.Fprintln(report)
 
+	var (
+		header    = "| Changed File | Coverage Δ | Total | Covered | Missed | :robot: |"
+		separator = "|--------------|------------|-------|---------|--------|---------|"
+	)
+
 	if hasCheck(r.conf) {
-		_, _ = fmt.Fprintln(report, "| Changed File | Coverage Δ | Total | Covered | Missed | :robot: | Pass |")
-		_, _ = fmt.Fprintln(report, "|--------------|------------|-------|---------|--------|---------|------|")
-	} else {
-		_, _ = fmt.Fprintln(report, "| Changed File | Coverage Δ | Total | Covered | Missed | :robot: |")
-		_, _ = fmt.Fprintln(report, "|--------------|------------|-------|---------|--------|---------|")
+		header += " Pass |"
+		separator += "------|"
 	}
+
+	_, _ = fmt.Fprintln(report, header)
+	_, _ = fmt.Fprintln(report, separator)
 
 	for _, name := range files {
 		oldProfile, newProfile := r.Old.Files[name], r.New.Files[name]
@@ -299,26 +309,22 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 
 		emoji, diffStr := emojiScore(newPercent, oldPercent)
 
-		if hasCheck(r.conf) {
-			_, _ = fmt.Fprintf(report, "| %s | %.2f%% (%s) | %s | %s | %s | %s | %s |\n",
-				name,
-				newPercent, diffStr,
-				valueWithDelta(oldProfile.GetTotal(), newProfile.GetTotal()),
-				valueWithDelta(oldProfile.GetCovered(), newProfile.GetCovered()),
-				valueWithDelta(oldProfile.GetMissed(), newProfile.GetMissed()),
-				emoji,
-				emojiPass(r.FileCoveragePass.Detail[name]),
-			)
-		} else {
-			_, _ = fmt.Fprintf(report, "| %s | %.2f%% (%s) | %s | %s | %s | %s |\n",
-				name,
-				newPercent, diffStr,
-				valueWithDelta(oldProfile.GetTotal(), newProfile.GetTotal()),
-				valueWithDelta(oldProfile.GetCovered(), newProfile.GetCovered()),
-				valueWithDelta(oldProfile.GetMissed(), newProfile.GetMissed()),
-				emoji,
-			)
+		format := "| %s | %.2f%% (%s) | %s | %s | %s | %s |"
+		args := []any{
+			name,
+			newPercent, diffStr,
+			valueWithDelta(oldProfile.GetTotal(), newProfile.GetTotal()),
+			valueWithDelta(oldProfile.GetCovered(), newProfile.GetCovered()),
+			valueWithDelta(oldProfile.GetMissed(), newProfile.GetMissed()),
+			emoji,
 		}
+
+		if hasCheck(r.conf) {
+			format += "  %s |"
+			args = append(args, emojiPass(r.FileCoveragePass.Detail[name]))
+		}
+
+		_, _ = fmt.Fprintf(report, format+"\n", args...)
 	}
 }
 
