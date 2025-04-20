@@ -4,6 +4,8 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
+	"github.com/willjunx/go-coverage-report/pkg/config"
+
 	"github.com/willjunx/go-coverage-report/pkg/coverage"
 	"github.com/willjunx/go-coverage-report/pkg/report"
 )
@@ -20,7 +22,7 @@ var _ = Describe("Report", func() {
 			changedFiles, err := report.ParseChangedFiles("testdata/01-changed-files.json", "github.com/username/prioqueue")
 			Expect(err).ToNot(HaveOccurred())
 
-			report := report.New(oldCov, newCov, changedFiles)
+			report := report.New(&config.Default, oldCov, newCov, changedFiles)
 			actual := report.Markdown()
 
 			expected := `## Coverage Percentage 90.20%
@@ -59,7 +61,7 @@ var _ = Describe("Report", func() {
 				changedFiles, err := report.ParseChangedFiles("testdata/02-changed-files.json", "github.com/username/prioqueue")
 				Expect(err).ToNot(HaveOccurred())
 
-				report := report.New(oldCov, newCov, changedFiles)
+				report := report.New(&config.Default, oldCov, newCov, changedFiles)
 				actual := report.Markdown()
 
 				expected := `## Coverage Percentage 99.02%

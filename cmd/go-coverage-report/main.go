@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/willjunx/go-coverage-report/pkg/config"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/willjunx/go-coverage-report/pkg/config"
 
 	"github.com/willjunx/go-coverage-report/pkg/coverage"
 	pkgReport "github.com/willjunx/go-coverage-report/pkg/report"
@@ -106,7 +107,7 @@ func run(oldCovPath, newCovPath string, opts options) error {
 
 	conf := config.Default
 	if opts.configPath != "" {
-		if err = config.ConfigFromFile(&conf, opts.configPath); err != nil {
+		if err = config.FromFile(&conf, opts.configPath); err != nil {
 			return fmt.Errorf("failed to parse config: %w", err)
 		}
 	}

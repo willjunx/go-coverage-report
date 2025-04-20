@@ -3,11 +3,12 @@ package report
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/willjunx/go-coverage-report/pkg/config"
 	"math"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/willjunx/go-coverage-report/pkg/config"
 
 	"github.com/willjunx/go-coverage-report/pkg/coverage"
 )
@@ -230,9 +231,18 @@ func (r *Report) addDetails(report *strings.Builder) {
 	_, _ = fmt.Fprint(report, "</details>")
 	_, _ = fmt.Fprint(report, "---")
 
-	_, _ = fmt.Fprintln(
+	pass := r.TotalCoveragePass && r.PackageCoveragePass.Value && r.FileCoveragePass.Value
+	_, _ = fmt.Fprintf(
 		report,
-		fmt.Sprintf("## Coverage Result: %s %s", emojiPass(r.TotalCoveragePass && r.PackageCoveragePass.Value && r.FileCoveragePass.Value)),
+		"## Coverage Result: %s %s",
+		emojiPass(pass),
+		func() string {
+			if pass {
+				return "PASS"
+			}
+
+			return "FAIL"
+		}(),
 	)
 }
 
@@ -339,6 +349,6 @@ func (r *Report) TrimPrefix(prefix string) {
 	r.New.TrimPrefix(prefix)
 }
 
-func isCoveragePassed(threshold int, coverage float64) bool {
-	return int(math.Ceil(coverage)) >= threshold
+func isCoveragePassed(threshold int, cov float64) bool {
+	return int(math.Ceil(cov)) >= threshold
 }

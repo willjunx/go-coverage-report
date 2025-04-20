@@ -3,8 +3,10 @@ package config
 import (
 	"errors"
 	"fmt"
-	"gopkg.in/yaml.v3"
 	"os"
+	"path/filepath"
+
+	"gopkg.in/yaml.v3"
 )
 
 var Default = Config{
@@ -15,8 +17,8 @@ var Default = Config{
 	},
 }
 
-func ConfigFromFile(cfg *Config, filename string) error {
-	source, err := os.ReadFile(filename)
+func FromFile(cfg *Config, filename string) error {
+	source, err := os.ReadFile(filepath.Clean(filename))
 	if err != nil {
 		return fmt.Errorf("failed reading file: %w", err)
 	}
