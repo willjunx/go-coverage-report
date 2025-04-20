@@ -159,6 +159,11 @@ main() {
   start_group "Comment on pull request"
   post_comment "$GITHUB_PULL_REQUEST_NUMBER" "$COVERAGE_COMMENT_PATH" "$COMMENT_TAG"
   end_group
+
+  if grep -Fxq "### Coverage Result: :negative_squared_cross_mark: FAIL" "$COVERAGE_COMMENT_PATH"; then
+    echo "❌ Coverage check failed. Exiting with error."
+    exit 1
+  fi
 }
 
 main
