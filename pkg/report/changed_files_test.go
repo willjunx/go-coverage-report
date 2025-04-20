@@ -17,7 +17,7 @@ var _ = Describe("Report", func() {
 			newCov, err := coverage.NewCoverageFromFile("testdata/01-new-coverage.txt")
 			Expect(err).ToNot(HaveOccurred())
 
-			changedFiles := report.GetChangedFiles(oldCov, newCov)
+			changedFiles := report.GetChangedFiles("", oldCov, newCov)
 			Expect(changedFiles).To(Equal([]string{"github.com/username/prioqueue/min_heap.go"}))
 		})
 	})
