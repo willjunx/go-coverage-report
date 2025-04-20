@@ -12,11 +12,11 @@ setup_env_variables()  {
   COVERAGE_FILE_NAME=${COVERAGE_FILE_NAME:-coverage.txt}
   SKIP_COMMENT=${SKIP_COMMENT:-false}
   COMMENT_TAG="<-- ${COMMENT_TAG:-Go Coverage Report} -->"
+  CONFIG_PATH="${CONFIG_PATH:-}"
 
   OLD_COVERAGE_PATH=.github/outputs/old-coverage.txt
   NEW_COVERAGE_PATH=.github/outputs/new-coverage.txt
   COVERAGE_COMMENT_PATH=.github/outputs/coverage-comment.md
-  CHANGED_FILES_PATH=.github/outputs/all_modified_files.json
 
   if [[ -z ${GITHUB_REPOSITORY+x} ]]; then
       echo "Missing GITHUB_REPOSITORY environment variable"
@@ -105,6 +105,18 @@ post_comment() {
   gh pr comment "$pr_number" --body-file="$body"
 }
 
+check_coverage_result() {
+  local source="$1"
+  local fail_marker="$2"
+
+  if grep -Fxq "$fail_marker" "$source"; then
+    echo "❌ Coverage check failed. Exiting with error."
+    exit 1
+  else
+    echo "✅ Coverage check passed."
+  fi
+}
+
 main() {
   setup_env_variables
 
@@ -131,9 +143,9 @@ main() {
   REPORT=$(go-coverage-report \
       -root="$ROOT_PACKAGE" \
       -trim="$TRIM_PACKAGE" \
+      -config="$CONFIG_PATH" \
       "$OLD_COVERAGE_PATH" \
-      "$NEW_COVERAGE_PATH" \
-      "$CHANGED_FILES_PATH")
+      "$NEW_COVERAGE_PATH")
   end_group
 
   if [ -z "$REPORT" ]; then
@@ -159,6 +171,8 @@ main() {
   start_group "Comment on pull request"
   post_comment "$GITHUB_PULL_REQUEST_NUMBER" "$COVERAGE_COMMENT_PATH" "$COMMENT_TAG"
   end_group
+
+  check_coverage_result "$COVERAGE_COMMENT_PATH" "### Coverage Result: :negative_squared_cross_mark: FAIL"
 }
 
 main

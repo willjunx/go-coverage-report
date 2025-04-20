@@ -8,16 +8,18 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/willjunx/go-coverage-report/pkg/config"
+
 	"github.com/willjunx/go-coverage-report/pkg/coverage"
 	pkgReport "github.com/willjunx/go-coverage-report/pkg/report"
 )
 
 var usage = strings.TrimSpace(fmt.Sprintf(`
-	Usage: %s [OPTIONS] <OLD_COVERAGE_FILE> <NEW_COVERAGE_FILE> <CHANGED_FILES_FILE>
+	Usage: %s [OPTIONS] <OLD_COVERAGE_FILE> <NEW_COVERAGE_FILE>
 	
 	Parse the OLD_COVERAGE_FILE and NEW_COVERAGE_FILE and compare the coverage of the
-	files listed in CHANGED_FILES_FILE. The result is printed to stdout as a simple
-	Markdown table with emojis indicating the coverage change per package.
+	changed files. The result is printed to stdout as a simple Markdown table with emojis 
+	indicating the coverage change per package.
 	
 	You can use the -root flag to add a prefix to all paths in the list of changed
 	files. This is useful to map the changed files (e.g., ["foo/my_file.go"] to their
@@ -28,15 +30,15 @@ var usage = strings.TrimSpace(fmt.Sprintf(`
 	ARGUMENTS:
 	  OLD_COVERAGE_FILE   The path to the old coverage file in the format produced by go test -coverprofile
 	  NEW_COVERAGE_FILE   The path to the new coverage file in the same format as OLD_COVERAGE_FILE
-	  CHANGED_FILES_FILE  The path to the file containing the list of changed files encoded as JSON string array
 	
 	OPTIONS:
 `, filepath.Base(os.Args[0])))
 
 type options struct {
-	root   string
-	trim   string
-	format string
+	root       string
+	trim       string
+	format     string
+	configPath string
 }
 
 func main() {
@@ -54,6 +56,7 @@ func main() {
 	flag.String("root", "", "The import path of the tested repository to add as prefix to all paths of the changed files")
 	flag.String("trim", "", "trim a prefix in the \"Impacted Packages\" column of the markdown report")
 	flag.String("format", "markdown", "output format (currently only 'markdown' is supported)")
+	flag.String("config", "", "path to the configuration file (.testcoverage.yaml), which defines test coverage settings and thresholds.")
 
 	err := run(programArgs())
 	if err != nil {
@@ -65,9 +68,9 @@ func programArgs() (oldCov, newCov string, opts options) {
 	flag.Parse()
 
 	args := flag.Args()
-	if len(args) != 3 {
+	if len(args) != 2 {
 		if len(args) > 0 {
-			log.Printf("ERROR: Expected exactly 3 arguments but got %d\n\n", len(args))
+			log.Printf("ERROR: Expected exactly 2 arguments but got %d\n\n", len(args))
 		}
 
 		flag.Usage()
@@ -75,9 +78,10 @@ func programArgs() (oldCov, newCov string, opts options) {
 	}
 
 	opts = options{
-		root:   flag.Lookup("root").Value.String(),
-		trim:   flag.Lookup("trim").Value.String(),
-		format: flag.Lookup("format").Value.String(),
+		root:       flag.Lookup("root").Value.String(),
+		trim:       flag.Lookup("trim").Value.String(),
+		format:     flag.Lookup("format").Value.String(),
+		configPath: flag.Lookup("config").Value.String(),
 	}
 
 	return args[0], args[1], opts
@@ -101,7 +105,16 @@ func run(oldCovPath, newCovPath string, opts options) error {
 		return nil
 	}
 
-	report := pkgReport.New(oldCov, newCov, changedFiles)
+	conf := config.Default
+	if opts.configPath != "" {
+		if err = config.FromFile(&conf, opts.configPath); err != nil {
+			return fmt.Errorf("failed to parse config: %w", err)
+		}
+	}
+
+	conf.RootPackage = opts.root
+
+	report := pkgReport.New(&conf, oldCov, newCov, changedFiles)
 	if opts.trim != "" {
 		report.TrimPrefix(opts.trim)
 	}
