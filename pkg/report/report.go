@@ -156,7 +156,7 @@ func (r *Report) Markdown() string {
 
 		if hasCheckCoverage {
 			format += " %s |"
-
+			fmt.Println("FAKKA", pkg)
 			args = append(args, emojiPass(r.PackageCoveragePass.Detail[pkg]))
 		}
 
