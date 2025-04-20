@@ -15,11 +15,11 @@ import (
 )
 
 var usage = strings.TrimSpace(fmt.Sprintf(`
-	Usage: %s [OPTIONS] <OLD_COVERAGE_FILE> <NEW_COVERAGE_FILE> <CHANGED_FILES_FILE>
+	Usage: %s [OPTIONS] <OLD_COVERAGE_FILE> <NEW_COVERAGE_FILE>
 	
 	Parse the OLD_COVERAGE_FILE and NEW_COVERAGE_FILE and compare the coverage of the
-	files listed in CHANGED_FILES_FILE. The result is printed to stdout as a simple
-	Markdown table with emojis indicating the coverage change per package.
+	changed files. The result is printed to stdout as a simple Markdown table with emojis 
+	indicating the coverage change per package.
 	
 	You can use the -root flag to add a prefix to all paths in the list of changed
 	files. This is useful to map the changed files (e.g., ["foo/my_file.go"] to their
@@ -68,9 +68,9 @@ func programArgs() (oldCov, newCov string, opts options) {
 	flag.Parse()
 
 	args := flag.Args()
-	if len(args) != 3 {
+	if len(args) != 2 {
 		if len(args) > 0 {
-			log.Printf("ERROR: Expected exactly 3 arguments but got %d\n\n", len(args))
+			log.Printf("ERROR: Expected exactly 2 arguments but got %d\n\n", len(args))
 		}
 
 		flag.Usage()
@@ -98,7 +98,7 @@ func run(oldCovPath, newCovPath string, opts options) error {
 		return fmt.Errorf("failed to parse new coverage: %w", err)
 	}
 
-	changedFiles := pkgReport.GetChangedFiles(oldCov, newCov)
+	changedFiles := pkgReport.GetChangedFiles(opts.trim, oldCov, newCov)
 
 	if len(changedFiles) == 0 {
 		log.Println("Skipping report since there are no changed files")

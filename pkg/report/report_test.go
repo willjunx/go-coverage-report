@@ -39,7 +39,7 @@ var _ = Describe("Report", func() {
 
 <summary>Coverage by file</summary>
 
-### Changed files (no unit tests)
+### Changed files
 
 | Changed File | Coverage Δ | Total | Covered | Missed | :robot: |
 |--------------|------------|-------|---------|--------|---------|
@@ -120,7 +120,7 @@ var _ = Describe("Report", func() {
 
 <summary>Coverage by file</summary>
 
-### Changed files (no unit tests)
+### Changed files
 
 | Changed File | Coverage Δ | Total | Covered | Missed | :robot: |
 |--------------|------------|-------|---------|--------|---------|
@@ -157,7 +157,7 @@ var _ = Describe("Report", func() {
 
 <summary>Coverage by file</summary>
 
-### Changed files (no unit tests)
+### Changed files
 
 | Changed File | Coverage Δ | Total | Covered | Missed | :robot: |
 |--------------|------------|-------|---------|--------|---------|
@@ -195,7 +195,7 @@ var _ = Describe("Report", func() {
 
 <summary>Coverage by file</summary>
 
-### Changed files (no unit tests)
+### Changed files
 
 | Changed File | Coverage Δ | Total | Covered | Missed | :robot: |
 |--------------|------------|-------|---------|--------|---------|
@@ -230,7 +230,7 @@ var _ = Describe("Report", func() {
 
 <summary>Coverage by file</summary>
 
-### Changed files (no unit tests)
+### Changed files
 
 | Changed File | Coverage Δ | Total | Covered | Missed | :robot: |
 |--------------|------------|-------|---------|--------|---------|
@@ -267,7 +267,7 @@ var _ = Describe("Report", func() {
 
 <summary>Coverage by file</summary>
 
-### Changed files (no unit tests)
+### Changed files
 
 | Changed File | Coverage Δ | Total | Covered | Missed | :robot: | Pass |
 |--------------|------------|-------|---------|--------|---------|------|
@@ -302,7 +302,7 @@ var _ = Describe("Report", func() {
 
 <summary>Coverage by file</summary>
 
-### Changed files (no unit tests)
+### Changed files
 
 | Changed File | Coverage Δ | Total | Covered | Missed | :robot: | Pass |
 |--------------|------------|-------|---------|--------|---------|------|

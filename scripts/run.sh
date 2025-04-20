@@ -17,7 +17,6 @@ setup_env_variables()  {
   OLD_COVERAGE_PATH=.github/outputs/old-coverage.txt
   NEW_COVERAGE_PATH=.github/outputs/new-coverage.txt
   COVERAGE_COMMENT_PATH=.github/outputs/coverage-comment.md
-  CHANGED_FILES_PATH=.github/outputs/all_modified_files.json
 
   if [[ -z ${GITHUB_REPOSITORY+x} ]]; then
       echo "Missing GITHUB_REPOSITORY environment variable"
@@ -134,8 +133,7 @@ main() {
       -trim="$TRIM_PACKAGE" \
       -config="$CONFIG_PATH" \
       "$OLD_COVERAGE_PATH" \
-      "$NEW_COVERAGE_PATH" \
-      "$CHANGED_FILES_PATH")
+      "$NEW_COVERAGE_PATH")
   end_group
 
   if [ -z "$REPORT" ]; then

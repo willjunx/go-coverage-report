@@ -274,7 +274,7 @@ func (r *Report) addTotalCoverageResult(report *strings.Builder) {
 }
 
 func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
-	_, _ = fmt.Fprintln(report, "### Changed files (no unit tests)")
+	_, _ = fmt.Fprintln(report, "### Changed files")
 	_, _ = fmt.Fprintln(report)
 
 	var (
