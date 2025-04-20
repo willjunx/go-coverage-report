@@ -67,4 +67,3 @@ jobs:
         with:
           version: local
           trim: "github.com/willjunx/go-coverage-report/"
-          config-path: .testcoverage.example.yaml
