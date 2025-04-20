@@ -11,6 +11,8 @@ inputs:
     required: true
     default: "v1.0.0-alpha.6"
 
+  coverage-threshold:
+
   coverage-artifact-name:
     description: 'The name of the artifact containing the code coverage results.'
     required: true
@@ -95,3 +97,4 @@ runs:
         SKIP_COMMENT: ${{ inputs.skip-comment }}
         COMMENT_TAG: ${{ inputs.comment-tag }}
         TRIM_PACKAGE: ${{ inputs.trim }}
+

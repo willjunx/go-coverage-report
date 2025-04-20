@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/willjunx/go-coverage-report/pkg/config"
 	"log"
 	"os"
 	"path/filepath"
@@ -28,15 +29,15 @@ var usage = strings.TrimSpace(fmt.Sprintf(`
 	ARGUMENTS:
 	  OLD_COVERAGE_FILE   The path to the old coverage file in the format produced by go test -coverprofile
 	  NEW_COVERAGE_FILE   The path to the new coverage file in the same format as OLD_COVERAGE_FILE
-	  CHANGED_FILES_FILE  The path to the file containing the list of changed files encoded as JSON string array
 	
 	OPTIONS:
 `, filepath.Base(os.Args[0])))
 
 type options struct {
-	root   string
-	trim   string
-	format string
+	root       string
+	trim       string
+	format     string
+	configPath string
 }
 
 func main() {
@@ -54,6 +55,7 @@ func main() {
 	flag.String("root", "", "The import path of the tested repository to add as prefix to all paths of the changed files")
 	flag.String("trim", "", "trim a prefix in the \"Impacted Packages\" column of the markdown report")
 	flag.String("format", "markdown", "output format (currently only 'markdown' is supported)")
+	flag.String("config", "", "path to the configuration file (.testcoverage.yaml), which defines test coverage settings and thresholds.")
 
 	err := run(programArgs())
 	if err != nil {
@@ -75,9 +77,10 @@ func programArgs() (oldCov, newCov string, opts options) {
 	}
 
 	opts = options{
-		root:   flag.Lookup("root").Value.String(),
-		trim:   flag.Lookup("trim").Value.String(),
-		format: flag.Lookup("format").Value.String(),
+		root:       flag.Lookup("root").Value.String(),
+		trim:       flag.Lookup("trim").Value.String(),
+		format:     flag.Lookup("format").Value.String(),
+		configPath: flag.Lookup("config").Value.String(),
 	}
 
 	return args[0], args[1], opts
@@ -101,7 +104,14 @@ func run(oldCovPath, newCovPath string, opts options) error {
 		return nil
 	}
 
-	report := pkgReport.New(oldCov, newCov, changedFiles)
+	conf := config.Default
+	if opts.configPath != "" {
+		if err = config.ConfigFromFile(&conf, opts.configPath); err != nil {
+			return fmt.Errorf("failed to parse config: %w", err)
+		}
+	}
+
+	report := pkgReport.New(&conf, oldCov, newCov, changedFiles)
 	if opts.trim != "" {
 		report.TrimPrefix(opts.trim)
 	}
