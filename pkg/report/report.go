@@ -90,8 +90,6 @@ func checkPackageCoverage(threshold int, cov *coverage.Coverage, changedPackages
 		}
 	}
 
-	res.Value = len(res.Detail) == 0
-
 	return res
 }
 
@@ -158,6 +156,7 @@ func (r *Report) Markdown() string {
 
 		if hasCheckCoverage {
 			format += " %s |"
+
 			args = append(args, emojiPass(r.PackageCoveragePass.Detail[pkg]))
 		}
 
@@ -249,19 +248,20 @@ func (r *Report) addDetails(report *strings.Builder) {
 
 	_, _ = fmt.Fprint(report, "</details>")
 
-	if hasCheck(r.conf) {
+	if r.conf.Threshold.Total > 0 || r.conf.Threshold.File > 0 || r.conf.Threshold.Package > 0 {
 		_, _ = fmt.Fprintln(report)
-		r.addCoverageResult(report)
+		r.addTotalCoverageResult(report)
 	}
 }
 
-func (r *Report) addCoverageResult(report *strings.Builder) {
+func (r *Report) addTotalCoverageResult(report *strings.Builder) {
 	_, _ = fmt.Fprintln(report, "\n---")
 
 	pass := r.TotalCoveragePass && r.PackageCoveragePass.Value && r.FileCoveragePass.Value
+
 	_, _ = fmt.Fprintf(
 		report,
-		"## Coverage Result: %s %s",
+		"### Coverage Result: %s %s",
 		emojiPass(pass),
 		func() string {
 			if pass {
@@ -282,7 +282,8 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 		separator = "|--------------|------------|-------|---------|--------|---------|"
 	)
 
-	if hasCheck(r.conf) {
+	hasCheck := r.conf.Threshold.File > 0
+	if hasCheck {
 		header += " Pass |"
 		separator += "------|"
 	}
@@ -319,8 +320,9 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 			emoji,
 		}
 
-		if hasCheck(r.conf) {
-			format += "  %s |"
+		if hasCheck {
+			format += " %s |"
+
 			args = append(args, emojiPass(r.FileCoveragePass.Detail[name]))
 		}
 
@@ -396,9 +398,9 @@ func (r *Report) TrimPrefix(prefix string) {
 }
 
 func isCoveragePassed(threshold int, cov float64) bool {
-	return int(math.Ceil(cov)) >= threshold
-}
+	if threshold == 0 {
+		return true
+	}
 
-func hasCheck(conf *config.Config) bool {
-	return conf.Threshold.File > 0 || conf.Threshold.Package > 0 || conf.Threshold.Total > 0
+	return int(math.Ceil(cov)) >= threshold
 }
