@@ -1,7 +1,6 @@
 package report_test
 
 import (
-	"fmt"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -47,8 +46,7 @@ var _ = Describe("Report", func() {
 | github.com/username/prioqueue/foo/bar/baz.go | 0.00% (ø) | 0 | 0 | 0 |  |
 | github.com/username/prioqueue/min_heap.go | 80.77% (**-19.23%**) | 52 (+2) | 42 (-8) | 10 (+10) | :skull:  |
 </details>`
-			fmt.Println("APAKAH", actual)
-			fmt.Println("BENAR", expected)
+
 			Expect(actual).To(Equal(expected))
 		})
 
