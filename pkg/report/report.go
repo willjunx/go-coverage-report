@@ -256,7 +256,7 @@ func (r *Report) addDetails(report *strings.Builder) {
 }
 
 func (r *Report) addCoverageResult(report *strings.Builder) {
-	_, _ = fmt.Fprintln(report, "---")
+	_, _ = fmt.Fprintln(report, "\n---")
 
 	pass := r.TotalCoveragePass && r.PackageCoveragePass.Value && r.FileCoveragePass.Value
 	_, _ = fmt.Fprintf(
