@@ -12,6 +12,7 @@ setup_env_variables()  {
   COVERAGE_FILE_NAME=${COVERAGE_FILE_NAME:-coverage.txt}
   SKIP_COMMENT=${SKIP_COMMENT:-false}
   COMMENT_TAG="<-- ${COMMENT_TAG:-Go Coverage Report} -->"
+  CONFIG_PATH="${CONFIG_PATH:-}"
 
   OLD_COVERAGE_PATH=.github/outputs/old-coverage.txt
   NEW_COVERAGE_PATH=.github/outputs/new-coverage.txt
@@ -131,6 +132,7 @@ main() {
   REPORT=$(go-coverage-report \
       -root="$ROOT_PACKAGE" \
       -trim="$TRIM_PACKAGE" \
+      -config="$CONFIG_PATH" \
       "$OLD_COVERAGE_PATH" \
       "$NEW_COVERAGE_PATH" \
       "$CHANGED_FILES_PATH")

@@ -11,7 +11,9 @@ inputs:
     required: true
     default: "v1.0.0-alpha.6"
 
-  coverage-threshold:
+  config-path:
+    description: "The config path"
+    default: ""
 
   coverage-artifact-name:
     description: 'The name of the artifact containing the code coverage results.'
@@ -97,4 +99,4 @@ runs:
         SKIP_COMMENT: ${{ inputs.skip-comment }}
         COMMENT_TAG: ${{ inputs.comment-tag }}
         TRIM_PACKAGE: ${{ inputs.trim }}
-
+        CONFIG_PATH: ${{ inputs.config-path }}
