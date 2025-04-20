@@ -152,7 +152,7 @@ func (r *Report) Markdown() string {
 		emoji, diffStr := emojiScore(newPercent, oldPercent)
 
 		format := "| %s | %.2f%% (%s) | %s |"
-		args := []interface{}{filepath.Join(r.conf.RootPackage, pkg), newPercent, diffStr, emoji}
+		args := []interface{}{pkg, newPercent, diffStr, emoji}
 
 		if hasCheckCoverage {
 			format += " %s |"
@@ -312,7 +312,7 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 
 		format := "| %s | %.2f%% (%s) | %s | %s | %s | %s |"
 		args := []any{
-			filepath.Join(r.conf.RootPackage, name),
+			name,
 			newPercent, diffStr,
 			valueWithDelta(oldProfile.GetTotal(), newProfile.GetTotal()),
 			valueWithDelta(oldProfile.GetCovered(), newProfile.GetCovered()),
