@@ -294,7 +294,7 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 	_, _ = fmt.Fprintln(report, separator)
 
 	for _, name := range files {
-		name = filepath.Join(r.conf.RootPackage, name)
+		fullPath := filepath.Join(r.conf.RootPackage, name)
 
 		oldProfile, newProfile := r.Old.Files[name], r.New.Files[name]
 		oldPercent, newPercent := oldProfile.CoveragePercent(), newProfile.CoveragePercent()
@@ -316,7 +316,7 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 
 		format := "| %s | %.2f%% (%s) | %s | %s | %s | %s |"
 		args := []any{
-			name,
+			fullPath,
 			newPercent, diffStr,
 			valueWithDelta(oldProfile.GetTotal(), newProfile.GetTotal()),
 			valueWithDelta(oldProfile.GetCovered(), newProfile.GetCovered()),
@@ -327,7 +327,7 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 		if hasCheck {
 			format += " %s |"
 
-			args = append(args, emojiPass(r.FileCoveragePass.Detail[name]))
+			args = append(args, emojiPass(r.FileCoveragePass.Detail[fullPath]))
 		}
 
 		_, _ = fmt.Fprintf(report, format+"\n", args...)
