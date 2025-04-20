@@ -118,12 +118,19 @@ func changedPackages(changedFiles []string) []string {
 
 func (r *Report) Markdown() string {
 	var (
-		report = new(strings.Builder)
+		report           = new(strings.Builder)
+		hasCheckCoverage = r.conf.Threshold.Package > 0
 	)
 
 	_, _ = fmt.Fprintln(report, r.Title())
-	_, _ = fmt.Fprintln(report, "| Impacted Packages | Coverage Δ | :robot: | Pass |")
-	_, _ = fmt.Fprintln(report, "|-------------------|------------|---------|------|")
+
+	if hasCheckCoverage {
+		_, _ = fmt.Fprintln(report, "| Impacted Packages | Coverage Δ | :robot: | Pass |")
+		_, _ = fmt.Fprintln(report, "|-------------------|------------|---------|------|")
+	} else {
+		_, _ = fmt.Fprintln(report, "| Impacted Packages | Coverage Δ | :robot: |")
+		_, _ = fmt.Fprintln(report, "|-------------------|------------|---------|")
+	}
 
 	oldCovPkgs := r.Old.ByPackage()
 	newCovPkgs := r.New.ByPackage()
@@ -140,9 +147,16 @@ func (r *Report) Markdown() string {
 		}
 
 		emoji, diffStr := emojiScore(newPercent, oldPercent)
-		_, _ = fmt.Fprintf(report, "| %s | %.2f%% (%s) | %s | %s |\n",
-			pkg, newPercent, diffStr, emoji, emojiPass(r.PackageCoveragePass.Detail[pkg]),
-		)
+
+		if hasCheckCoverage {
+			_, _ = fmt.Fprintf(report, "| %s | %.2f%% (%s) | %s | %s |\n",
+				pkg, newPercent, diffStr, emoji, emojiPass(r.PackageCoveragePass.Detail[pkg]),
+			)
+		} else {
+			_, _ = fmt.Fprintf(report, "| %s | %.2f%% (%s) | %s |\n",
+				pkg, newPercent, diffStr, emoji,
+			)
+		}
 	}
 
 	report.WriteString("\n")
@@ -229,7 +243,15 @@ func (r *Report) addDetails(report *strings.Builder) {
 	}
 
 	_, _ = fmt.Fprint(report, "</details>")
-	_, _ = fmt.Fprint(report, "---")
+
+	if hasCheck(r.conf) {
+		_, _ = fmt.Fprintln(report)
+		r.addCoverageResult(report)
+	}
+}
+
+func (r *Report) addCoverageResult(report *strings.Builder) {
+	_, _ = fmt.Fprintln(report, "---")
 
 	pass := r.TotalCoveragePass && r.PackageCoveragePass.Value && r.FileCoveragePass.Value
 	_, _ = fmt.Fprintf(
@@ -249,8 +271,14 @@ func (r *Report) addDetails(report *strings.Builder) {
 func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 	_, _ = fmt.Fprintln(report, "### Changed files (no unit tests)")
 	_, _ = fmt.Fprintln(report)
-	_, _ = fmt.Fprintln(report, "| Changed File | Coverage Δ | Total | Covered | Missed | :robot: | Pass |")
-	_, _ = fmt.Fprintln(report, "|--------------|------------|-------|---------|--------|---------|------|")
+
+	if hasCheck(r.conf) {
+		_, _ = fmt.Fprintln(report, "| Changed File | Coverage Δ | Total | Covered | Missed | :robot: | Pass |")
+		_, _ = fmt.Fprintln(report, "|--------------|------------|-------|---------|--------|---------|------|")
+	} else {
+		_, _ = fmt.Fprintln(report, "| Changed File | Coverage Δ | Total | Covered | Missed | :robot: |")
+		_, _ = fmt.Fprintln(report, "|--------------|------------|-------|---------|--------|---------|")
+	}
 
 	for _, name := range files {
 		oldProfile, newProfile := r.Old.Files[name], r.New.Files[name]
@@ -270,15 +298,27 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 		}
 
 		emoji, diffStr := emojiScore(newPercent, oldPercent)
-		_, _ = fmt.Fprintf(report, "| %s | %.2f%% (%s) | %s | %s | %s | %s | %s |\n",
-			name,
-			newPercent, diffStr,
-			valueWithDelta(oldProfile.GetTotal(), newProfile.GetTotal()),
-			valueWithDelta(oldProfile.GetCovered(), newProfile.GetCovered()),
-			valueWithDelta(oldProfile.GetMissed(), newProfile.GetMissed()),
-			emoji,
-			emojiPass(r.FileCoveragePass.Detail[name]),
-		)
+
+		if hasCheck(r.conf) {
+			_, _ = fmt.Fprintf(report, "| %s | %.2f%% (%s) | %s | %s | %s | %s | %s |\n",
+				name,
+				newPercent, diffStr,
+				valueWithDelta(oldProfile.GetTotal(), newProfile.GetTotal()),
+				valueWithDelta(oldProfile.GetCovered(), newProfile.GetCovered()),
+				valueWithDelta(oldProfile.GetMissed(), newProfile.GetMissed()),
+				emoji,
+				emojiPass(r.FileCoveragePass.Detail[name]),
+			)
+		} else {
+			_, _ = fmt.Fprintf(report, "| %s | %.2f%% (%s) | %s | %s | %s | %s |\n",
+				name,
+				newPercent, diffStr,
+				valueWithDelta(oldProfile.GetTotal(), newProfile.GetTotal()),
+				valueWithDelta(oldProfile.GetCovered(), newProfile.GetCovered()),
+				valueWithDelta(oldProfile.GetMissed(), newProfile.GetMissed()),
+				emoji,
+			)
+		}
 	}
 }
 
@@ -351,4 +391,8 @@ func (r *Report) TrimPrefix(prefix string) {
 
 func isCoveragePassed(threshold int, cov float64) bool {
 	return int(math.Ceil(cov)) >= threshold
+}
+
+func hasCheck(conf *config.Config) bool {
+	return conf.Threshold.File > 0 || conf.Threshold.Package > 0 || conf.Threshold.Total > 0
 }
