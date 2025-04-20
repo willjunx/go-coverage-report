@@ -158,6 +158,7 @@ func (r *Report) Markdown() string {
 
 		if hasCheckCoverage {
 			format += " %s |"
+
 			args = append(args, emojiPass(r.PackageCoveragePass.Detail[pkg]))
 		}
 
@@ -325,6 +326,7 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 
 		if hasCheck {
 			format += " %s |"
+
 			args = append(args, emojiPass(r.FileCoveragePass.Detail[name]))
 		}
 
