@@ -98,7 +98,7 @@ func run(oldCovPath, newCovPath string, opts options) error {
 		return fmt.Errorf("failed to parse new coverage: %w", err)
 	}
 
-	changedFiles := pkgReport.GetChangedFiles(opts.trim, oldCov, newCov)
+	changedFiles := pkgReport.GetChangedFiles(oldCov, newCov)
 
 	if len(changedFiles) == 0 {
 		log.Println("Skipping report since there are no changed files")
@@ -111,6 +111,8 @@ func run(oldCovPath, newCovPath string, opts options) error {
 			return fmt.Errorf("failed to parse config: %w", err)
 		}
 	}
+
+	conf.RootPackage = opts.root
 
 	report := pkgReport.New(&conf, oldCov, newCov, changedFiles)
 	if opts.trim != "" {

@@ -8,7 +8,7 @@ import (
 	"github.com/willjunx/go-coverage-report/pkg/coverage"
 )
 
-func GetChangedFiles(prefix string, oldCov, newCov *coverage.Coverage) []string {
+func GetChangedFiles(oldCov, newCov *coverage.Coverage) []string {
 	var (
 		oldFiles = oldCov.Files
 		newFiles = newCov.Files
@@ -31,7 +31,7 @@ func GetChangedFiles(prefix string, oldCov, newCov *coverage.Coverage) []string 
 		}
 
 		if isNew || isChange {
-			res = append(res, filepath.Join(prefix, newFile))
+			res = append(res, newFile)
 		}
 	}
 

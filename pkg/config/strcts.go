@@ -3,7 +3,8 @@ package config
 import "fmt"
 
 type Config struct {
-	Threshold Threshold `yaml:"threshold"`
+	RootPackage string
+	Threshold   Threshold `yaml:"threshold"`
 }
 
 type Threshold struct {

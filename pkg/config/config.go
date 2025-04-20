@@ -10,6 +10,7 @@ import (
 )
 
 var Default = Config{
+	RootPackage: "",
 	Threshold: Threshold{
 		File:    0,
 		Package: 0,
