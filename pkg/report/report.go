@@ -137,9 +137,11 @@ func (r *Report) Markdown() string {
 
 	oldCovPkgs := r.Old.ByPackage()
 	newCovPkgs := r.New.ByPackage()
-	fmt.Println("HALOHA", r.PackageCoveragePass.Detail)
+
 	for _, pkg := range r.ChangedPackages {
 		var oldPercent, newPercent float64
+
+		pkg = filepath.Join(r.conf.RootPackage, pkg)
 
 		if cov, ok := oldCovPkgs[pkg]; ok {
 			oldPercent = cov.Percent()
@@ -156,7 +158,6 @@ func (r *Report) Markdown() string {
 
 		if hasCheckCoverage {
 			format += " %s |"
-			fmt.Println("FAKKA", pkg)
 			args = append(args, emojiPass(r.PackageCoveragePass.Detail[pkg]))
 		}
 
@@ -290,7 +291,7 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 
 	_, _ = fmt.Fprintln(report, header)
 	_, _ = fmt.Fprintln(report, separator)
-
+	fmt.Println("HALOHA", r.FileCoveragePass.Detail)
 	for _, name := range files {
 		oldProfile, newProfile := r.Old.Files[name], r.New.Files[name]
 		oldPercent, newPercent := oldProfile.CoveragePercent(), newProfile.CoveragePercent()
@@ -322,7 +323,7 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 
 		if hasCheck {
 			format += " %s |"
-
+			fmt.Println("Apkah", name)
 			args = append(args, emojiPass(r.FileCoveragePass.Detail[name]))
 		}
 

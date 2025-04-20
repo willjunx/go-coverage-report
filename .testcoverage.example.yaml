@@ -2,7 +2,7 @@
 threshold:
   # (optional; default 0)
   # Minimum coverage percentage required for individual files.
-  file: 0
+  file: 70
 
   # (optional; default 0)
   # Minimum coverage percentage required for each package.
@@ -10,4 +10,4 @@ threshold:
 
   # (optional; default 0)
   # Minimum overall project coverage percentage required.
-  total: 0
+  total: 95
