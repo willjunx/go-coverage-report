@@ -172,7 +172,7 @@ main() {
   post_comment "$GITHUB_PULL_REQUEST_NUMBER" "$COVERAGE_COMMENT_PATH" "$COMMENT_TAG"
   end_group
 
-  check_coverage_result "### Coverage Result: :negative_squared_cross_mark: FAIL" "$COVERAGE_COMMENT_PATH"
+  check_coverage_result "$COVERAGE_COMMENT_PATH" "### Coverage Result: :negative_squared_cross_mark: FAIL"
 }
 
 main
