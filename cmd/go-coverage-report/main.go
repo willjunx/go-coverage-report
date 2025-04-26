@@ -88,6 +88,13 @@ func programArgs() (oldCov, newCov string, opts options) {
 }
 
 func run(oldCovPath, newCovPath string, opts options) error {
+	conf := config.Default
+	if opts.configPath != "" {
+		if err := config.FromFile(&conf, opts.configPath); err != nil {
+			return fmt.Errorf("failed to parse config: %w", err)
+		}
+	}
+
 	oldCov, err := coverage.NewCoverageFromFile(oldCovPath)
 	if err != nil {
 		return fmt.Errorf("failed to parse old coverage: %w", err)
@@ -98,18 +105,11 @@ func run(oldCovPath, newCovPath string, opts options) error {
 		return fmt.Errorf("failed to parse new coverage: %w", err)
 	}
 
-	changedFiles := pkgReport.GetChangedFiles(oldCov, newCov)
+	changedFiles := pkgReport.GetChangedFiles(oldCov, newCov, conf.Exclude.Paths)
 
 	if len(changedFiles) == 0 {
 		log.Println("Skipping report since there are no changed files")
 		return nil
-	}
-
-	conf := config.Default
-	if opts.configPath != "" {
-		if err = config.FromFile(&conf, opts.configPath); err != nil {
-			return fmt.Errorf("failed to parse config: %w", err)
-		}
 	}
 
 	conf.RootPackage = opts.root

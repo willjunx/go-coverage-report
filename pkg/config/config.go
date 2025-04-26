@@ -16,6 +16,7 @@ var Default = Config{
 		Package: 0,
 		Total:   0,
 	},
+	Exclude: Exclude{Paths: nil},
 }
 
 func FromFile(cfg *Config, filename string) error {
