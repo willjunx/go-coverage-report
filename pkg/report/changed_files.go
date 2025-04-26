@@ -11,10 +11,9 @@ import (
 
 func GetChangedFiles(oldCov, newCov *coverage.Coverage, excludePaths []string) []string {
 	var (
-		oldFiles     = oldCov.Files
-		newFiles     = newCov.Files
-		res          = make([]string, 0, max(len(oldFiles), len(newFiles)))
-		excludeRules = compileExcludePathRules(excludePaths)
+		oldFiles, newFiles = oldCov.Files, newCov.Files
+		res                = make([]string, 0, max(len(oldFiles), len(newFiles)))
+		excludeRules       = compileExcludePathRules(excludePaths)
 	)
 
 	for newFile, newProfile := range newFiles {
