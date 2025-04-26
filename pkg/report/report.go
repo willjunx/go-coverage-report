@@ -293,7 +293,7 @@ func (r *Report) addCodeFileDetails(report *strings.Builder, files []string) {
 
 	for _, name := range files {
 		fullPath := filepath.Join(r.conf.RootPackage, name)
-		fmt.Println("APAKAH", name, fullPath)
+
 		oldProfile, newProfile := r.Old.Files[name], r.New.Files[name]
 		oldPercent, newPercent := oldProfile.CoveragePercent(), newProfile.CoveragePercent()
 
