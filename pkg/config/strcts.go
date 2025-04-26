@@ -5,6 +5,11 @@ import "fmt"
 type Config struct {
 	RootPackage string
 	Threshold   Threshold `yaml:"threshold"`
+	Exclude     Exclude   `yaml:"exclude"`
+}
+
+type Exclude struct {
+	Paths []string `yaml:"paths"`
 }
 
 type Threshold struct {

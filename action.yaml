@@ -9,7 +9,7 @@ inputs:
   version:
     description: "The exact version tag to use."
     required: true
-    default: "v1.0.0"
+    default: "v1.0.1"
 
   config-path:
     description: "The config path"

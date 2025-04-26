@@ -141,8 +141,6 @@ func (r *Report) Markdown() string {
 	for _, pkg := range r.ChangedPackages {
 		var oldPercent, newPercent float64
 
-		fullPath := filepath.Join(r.conf.RootPackage, pkg)
-
 		if cov, ok := oldCovPkgs[pkg]; ok {
 			oldPercent = cov.Percent()
 		}
@@ -154,12 +152,12 @@ func (r *Report) Markdown() string {
 		emoji, diffStr := emojiScore(newPercent, oldPercent)
 
 		format := "| %s | %.2f%% (%s) | %s |"
-		args := []interface{}{fullPath, newPercent, diffStr, emoji}
+		args := []interface{}{pkg, newPercent, diffStr, emoji}
 
 		if hasCheckCoverage {
 			format += " %s |"
 
-			args = append(args, emojiPass(r.PackageCoveragePass.Detail[fullPath]))
+			args = append(args, emojiPass(r.PackageCoveragePass.Detail[pkg]))
 		}
 
 		_, _ = fmt.Fprintf(report, format+"\n", args...)
