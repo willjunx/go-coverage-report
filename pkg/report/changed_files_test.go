@@ -17,8 +17,21 @@ var _ = Describe("Report", func() {
 			newCov, err := coverage.NewCoverageFromFile("testdata/01-new-coverage.txt")
 			Expect(err).ToNot(HaveOccurred())
 
-			changedFiles := report.GetChangedFiles(oldCov, newCov)
+			changedFiles := report.GetChangedFiles(oldCov, newCov, nil)
 			Expect(changedFiles).To(Equal([]string{"github.com/username/prioqueue/min_heap.go"}))
+		})
+
+		When("with exclude paths", func() {
+			It("should return correctly", func() {
+				oldCov, err := coverage.NewCoverageFromFile("testdata/02-old-coverage.txt")
+				Expect(err).ToNot(HaveOccurred())
+
+				newCov, err := coverage.NewCoverageFromFile("testdata/02-new-coverage.txt")
+				Expect(err).ToNot(HaveOccurred())
+
+				changedFiles := report.GetChangedFiles(oldCov, newCov, []string{"^github.com/username"})
+				Expect(changedFiles).To(Equal([]string{}))
+			})
 		})
 	})
 
