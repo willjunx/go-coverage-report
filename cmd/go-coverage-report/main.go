@@ -106,7 +106,6 @@ func run(oldCovPath, newCovPath string, opts options) error {
 	}
 
 	changedFiles := pkgReport.GetChangedFiles(oldCov, newCov, conf.Exclude.Paths)
-
 	if len(changedFiles) == 0 {
 		log.Println("Skipping report since there are no changed files")
 		return nil
